@@ -23,13 +23,13 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public string GetData()
+        public List<string> GetData()
         {
-            string result = string.Empty;
-            HttpResponseMessage response = client.GetAsync("jokes/random").GetAwaiter().GetResult();
+            var result = new List<string>();
+            HttpResponseMessage response = client.GetAsync("api/user/getusernames").GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
-                result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                result = response.Content.ReadAsAsync<List<string>>().GetAwaiter().GetResult();
             }
 
             return result;

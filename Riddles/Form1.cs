@@ -23,13 +23,14 @@ namespace Riddles
         public Form1()
         {
             InitializeComponent();
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             UserService userService = new UserService();
             var ewbjkfdew = userService.GetData();
-            MessageBox.Show(ewbjkfdew);
+            MessageBox.Show(string.Join("&", ewbjkfdew));
             //var name = textBox1.Text;
             //if (checkBox1.Checked)
             //{
