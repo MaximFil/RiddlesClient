@@ -14,22 +14,25 @@ namespace Riddles
 {
     public partial class Form1 : Form
     {
+        private readonly UserService userService;
         private const string loginLabelText = "I have an account";
         private const string signupLabelText = "Create a new account";
         private const string enterName = "Enter your Nickname";
         private const string enterPassword = "Enter your Password";
         private bool isLogin = true;
+        private List<string> usedUserNames;
 
         public Form1()
         {
             InitializeComponent();
-
+            this.userService = new UserService();
+            this.usedUserNames = new List<string>();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             UserService userService = new UserService();
-            var ewbjkfdew = userService.GetData();
+            var ewbjkfdew = userService.GetUsedUserNames();
             MessageBox.Show(string.Join("&", ewbjkfdew));
             //var name = textBox1.Text;
             //if (checkBox1.Checked)
@@ -100,6 +103,23 @@ namespace Riddles
         private void TextBox2_Enter(object sender, EventArgs e)
         {
             textBox2.Text = string.Empty;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            usedUserNames = userService.GetUsedUserNames();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (usedUserNames.Contains(textBox1.Text))
+            {
+                label3.Visible = true;
+            }
+            else
+            {
+                label3.Visible = false;
+            }
         }
     }
 }

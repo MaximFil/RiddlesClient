@@ -23,7 +23,7 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public List<string> GetData()
+        public List<string> GetUsedUserNames()
         {
             var result = new List<string>();
             HttpResponseMessage response = client.GetAsync("api/user/getusernames").GetAwaiter().GetResult();
