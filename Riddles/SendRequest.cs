@@ -7,18 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Riddles.DAL;
 
 namespace Riddles
 {
-    public partial class level_hardly : Form
+    public partial class SendRequest : Form
     {
-        public User User { get; set; }
         public Level Level { get; set; }
-        public level_hardly(User user)
+        public SendRequest()
         {
             InitializeComponent();
-            this.User = user;
+            
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -61,7 +59,7 @@ namespace Riddles
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Playground playground = new Playground(this.Level, User);
+            Playground playground = new Playground(this.Level);
             playground.Show();
             this.Close();
         }

@@ -7,33 +7,93 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Riddles.DAL;
+using Riddles.Entities;
 using Riddles.Services;
+using System.Text.RegularExpressions;
 
 namespace Riddles
 {
     public partial class Form1 : Form
     {
         private readonly UserService userService;
-        private const string loginLabelText = "I have an account";
-        private const string signupLabelText = "Create a new account";
-        private const string enterName = "Enter your Nickname";
-        private const string enterPassword = "Enter your Password";
+        private const string loginLabelText = "У меня уже есть аккаунт";
+        private const string signupLabelText = "Создать новый аккаунт";
+        private const string enterName = "Введите логин";
+        private const string enterPassword = "Введите пароль";
         private bool isLogin = true;
-        private List<string> usedUserNames;
+        private HashSet<string> usedUserNames;
+        private User User;
 
         public Form1()
         {
             InitializeComponent();
             this.userService = new UserService();
-            this.usedUserNames = new List<string>();
+            this.usedUserNames = new HashSet<string>();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            UserService userService = new UserService();
-            var ewbjkfdew = userService.GetUsedUserNames();
-            MessageBox.Show(string.Join("&", ewbjkfdew));
+            try
+            {
+                var login = textBox1.Text;
+                var password = textBox2.Text;
+                if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+                {
+                    MessageBox.Show("Логин или пароль должен содержать валидные символы!", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var loginRegex = new Regex(@"[^\u0021-\u007E]+");
+                var loginAdditionalRegex = new Regex("\"|\'");
+                if (loginRegex.IsMatch(login) || loginAdditionalRegex.IsMatch(login))
+                {
+                    MessageBox.Show("Пожалуйста введите корректный логин, который соответствует правилам:" +
+                        "\n-можно использовать латинские символы;" +
+                        "\n-можно использовать цифры;" +
+                        "\n-можно использовать спецсимволы за исключением \' и \".",
+                        "Валидация логина",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var passwordRegex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_.]).{8,}$");
+                if (!passwordRegex.IsMatch(password))
+                {
+                    MessageBox.Show("Пожалуйста введите корректный пароль, который соответствует правилам:" +
+                        "\n-по крайней мере одна строчная английская буква;" +
+                        "\n-по крайней мере одна заглавная английская буква;" +
+                        "\n-по крайней мере одна цифра;" +
+                        "\n-по крайней мере один спец символ;" +
+                        "\n-минимум 8 символов в длину.",
+                        "Валидация пароля",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (isLogin)
+                {
+                    User = userService.LogIn(login, password);
+                }
+                else
+                {
+                    User = userService.SignUp(login, password);
+                }
+
+                userService.ChangeActivityOfUser(User.Id, true);
+
+                UserProfile.Login = User.Name;
+                UserProfile.Password = User.Password;
+
+                Menu menu = new Menu();
+                menu.Show();
+                this.Hide();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             //var name = textBox1.Text;
             //if (checkBox1.Checked)
             //{
@@ -85,40 +145,48 @@ namespace Riddles
             {
                 isLogin = false;
                 label2.Text = loginLabelText;
-                button1.Text = "Sign up";
+                button1.Text = "Заригестрироваться";
             }
             else
             {
                 isLogin = true;
                 label2.Text = signupLabelText;
-                button1.Text = "Log in";
+                button1.Text = "Войти";
             }
         }
 
-        private void TextBox1_Enter(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
-            textBox1.Text = string.Empty;
-        }
-
-        private void TextBox2_Enter(object sender, EventArgs e)
-        {
-            textBox2.Text = string.Empty;
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            usedUserNames = userService.GetUsedUserNames();
+            try
+            {
+                usedUserNames = await userService.GetUsedUserNames();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if (usedUserNames.Contains(textBox1.Text))
+            if (!isLogin)
             {
-                label3.Visible = true;
-            }
-            else
+                if (usedUserNames.Contains(textBox1.Text))
+                {
+                    label3.Visible = true;
+                }
+                else
+                {
+                    label3.Visible = false;
+                }
+            } 
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(User != null)
             {
-                label3.Visible = false;
+                userService.ChangeActivityOfUser(User.Id, false);
             }
         }
     }

@@ -7,35 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Riddles.DAL;
+//using Riddles.DAL;
 
 namespace Riddles
 {
     public partial class Menu : Form
     {
-        public User User { get; set; }
-        public Menu(User user)
-        {
-            InitializeComponent();
-            this.User = user;
-        }
+        private bool dispose = true;
+       // public User User { get; set; }
         public Menu()
         {
             InitializeComponent();
-            
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            Form1 form1 = new Form1();
-            form1.Show();
-            this.Hide();
+            //this.User = user;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            level_hardly level_Hardly = new level_hardly(this.User);
-            level_Hardly.Show();
+            SendRequest sendRequest = new SendRequest();
+            sendRequest.Show();
+            dispose = false;
             this.Close();
 
         }
@@ -44,6 +34,7 @@ namespace Riddles
         {
             About_The_Game about_The_Game = new About_The_Game();
             about_The_Game.Show();
+            dispose = false;
             this.Hide();
         }
 
@@ -51,12 +42,21 @@ namespace Riddles
         {
             TableRecords records = new TableRecords();
             records.Show();
+            dispose = false;
             this.Close();
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e)
         {
+            this.Close();
+        }
 
+        private void Menu_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (dispose)
+            {
+                Application.Exit();
+            }
         }
     }
 }

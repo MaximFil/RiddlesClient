@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Riddles.DAL
+namespace Riddles.Entities
 {
-    public class User
+    public class Level
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public List<Record> Records { get; set; }
+
+        public string LevelName { get; set; }
+
         public List<Riddle> Riddles { get; set; }
-        public User ()
+
+        public Level()
         {
-            Records = new List<Record>();
             Riddles = new List<Riddle>();
-            
         }
     }
 }

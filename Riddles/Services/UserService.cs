@@ -1,4 +1,6 @@
-﻿using Riddles.DAL;
+﻿using Newtonsoft.Json;
+using Riddles.Entities;
+using Riddles.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -23,16 +25,92 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public List<string> GetUsedUserNames()
+        public async Task<HashSet<string>> GetUsedUserNames()
         {
             var result = new List<string>();
-            HttpResponseMessage response = client.GetAsync("api/user/getusernames").GetAwaiter().GetResult();
+            HttpResponseMessage response = await client.GetAsync("api/user/getusernames");
             if (response.IsSuccessStatusCode)
             {
-                result = response.Content.ReadAsAsync<List<string>>().GetAwaiter().GetResult();
+                result = await response.Content.ReadAsAsync<List<string>>();
             }
 
-            return result;
+            return result.ToHashSet();
+        }
+
+        public User LogIn(string login, string password)
+        {
+            User user = new User();
+            var response = client.GetAsync($"api/user/login/{login}/{password}").GetAwaiter().GetResult();
+            if (response.IsSuccessStatusCode)
+            {
+                var apiResponse = response.Content.ReadAsAsync<ApiResponse>().GetAwaiter().GetResult();
+                if (apiResponse.Success)
+                {
+                    user = JsonConvert.DeserializeObject<User>(apiResponse.Json);
+                }
+                else
+                {
+                    throw new Exception(apiResponse.Message);
+                }
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+
+            return user;
+        }
+
+        public User SignUp(string login, string password)
+        {
+            User user = new User() { Name = login, Password = password };
+            var response = client.PostAsJsonAsync("api/user/signup", user).GetAwaiter().GetResult();
+            if (response.IsSuccessStatusCode)
+            {
+                var apiResponse = response.Content.ReadAsAsync<ApiResponse>().GetAwaiter().GetResult();
+                if (apiResponse.Success)
+                {
+                    user = JsonConvert.DeserializeObject<User>(apiResponse.Json);
+                }
+                else
+                {
+                    throw new Exception(apiResponse.Message);
+                }
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+
+            return user;
+        }
+
+        public bool ChangeActivityOfUser(int userId, bool isActive)
+        {
+            if (userId < 1) return false;
+            var response = client.PutAsJsonAsync($"api/user/ChangeActivityOfUser/{userId}", isActive).GetAwaiter().GetResult();
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content.ReadAsAsync<bool>().GetAwaiter().GetResult();
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+        }
+
+        public bool ChangeIsPlayingOfUser(int userId, bool isPlaying)
+        {
+            if (userId < 1) return false;
+            var response = client.PutAsJsonAsync($"api/user/ChangeIsPlayingOfUser/{userId}", isPlaying).GetAwaiter().GetResult();
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content.ReadAsAsync<bool>().GetAwaiter().GetResult();
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
         }
     }
 }
