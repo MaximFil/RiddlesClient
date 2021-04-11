@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Riddles.Services;
 //using Riddles.DAL;
 
 namespace Riddles
 {
     public partial class Menu : Form
     {
-        private bool dispose = true;
        // public User User { get; set; }
         public Menu()
         {
@@ -25,16 +25,13 @@ namespace Riddles
         {
             SendRequest sendRequest = new SendRequest();
             sendRequest.Show();
-            dispose = false;
             this.Close();
-
         }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
             About_The_Game about_The_Game = new About_The_Game();
             about_The_Game.Show();
-            dispose = false;
             this.Hide();
         }
 
@@ -42,21 +39,12 @@ namespace Riddles
         {
             TableRecords records = new TableRecords();
             records.Show();
-            dispose = false;
             this.Close();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void Menu_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (dispose)
-            {
-                Application.Exit();
-            }
         }
     }
 }

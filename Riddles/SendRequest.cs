@@ -7,26 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LoadingIndicator.WinForms;
+using Riddles.Services;
 
 namespace Riddles
 {
     public partial class SendRequest : Form
     {
+        private readonly UserService userService;
+        private readonly LongOperation longOperation;
+        private HashSet<string> freeUserNames { get; set; }
         public Level Level { get; set; }
         public SendRequest()
         {
             InitializeComponent();
-            
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
+            userService = new UserService();
+            longOperation = new LongOperation(this);
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -47,21 +43,18 @@ namespace Riddles
             }
         }
 
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void butdton1_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            Playground playground = new Playground(this.Level);
-            playground.Show();
-            this.Close();
+            freeUserNames = userService.GetFreeUserNames().GetAwaiter().GetResult();
+            if (!freeUserNames.Contains(textBox1.Text))
+            {
+                MessageBox.Show("Пользователь с таким именем не существует!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                longOperation.Start();
+                HubService.SendInvite(textBox1.Text, this).GetAwaiter().GetResult();
+            }
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -73,9 +66,19 @@ namespace Riddles
             }
         }
 
-        private void level_hardly_Load(object sender, EventArgs e)
+        public void AcceptInvite(bool accept)
         {
-
+            if (accept)
+            {
+                longOperation.Stop();
+                Playground playground = new Playground(this.Level);
+                playground.Show();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show($"Пользователь {textBox1.Text} отклонил вашу прглашение!", "Приглашения", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

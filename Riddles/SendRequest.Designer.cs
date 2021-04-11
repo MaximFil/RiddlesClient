@@ -103,7 +103,6 @@
             this.label1.Size = new System.Drawing.Size(404, 41);
             this.label1.TabIndex = 4;
             this.label1.Text = "Выберите уровень сложности:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // groupBox1
             // 
@@ -121,7 +120,6 @@
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Уровни:";
-            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // label2
             // 
@@ -160,7 +158,6 @@
             this.Name = "SendRequest";
             this.Text = "Отправка приглашения";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.level_hardly_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

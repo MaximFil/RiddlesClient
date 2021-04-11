@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using Riddles.Entities;
 using Riddles.Services;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Security.Principal;
 
 namespace Riddles
 {
@@ -80,6 +82,7 @@ namespace Riddles
                 {
                     User = userService.SignUp(login, password);
                 }
+                HubService.SendRequest();
 
                 userService.ChangeActivityOfUser(User.Id, true);
 

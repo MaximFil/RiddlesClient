@@ -112,5 +112,17 @@ namespace Riddles.Services
                 throw new Exception(response.ReasonPhrase);
             }
         }
+
+        public async Task<HashSet<string>> GetFreeUserNames()
+        {
+            var result = new List<string>();
+            var response = client.GetAsync($"api/user/GetFreeUserNames").GetAwaiter().GetResult();
+            if (response.IsSuccessStatusCode)
+            {
+                result = await response.Content.ReadAsAsync<List<string>>();
+            }
+
+            return result.ToHashSet();
+        }
     }
 }
