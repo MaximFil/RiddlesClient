@@ -14,16 +14,18 @@ namespace Riddles
 {
     public partial class Menu : Form
     {
-       // public User User { get; set; }
-        public Menu()
+        // public User User { get; set; }
+        private readonly HubService hubService;
+        public Menu(HubService hubService = null)
         {
             InitializeComponent();
+            this.hubService = hubService;
             //this.User = user;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            SendRequest sendRequest = new SendRequest();
+            SendRequest sendRequest = new SendRequest(hubService);
             sendRequest.Show();
             this.Close();
         }

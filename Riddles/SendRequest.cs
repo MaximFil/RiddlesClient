@@ -16,13 +16,15 @@ namespace Riddles
     {
         private readonly UserService userService;
         private readonly LongOperation longOperation;
+        private readonly HubService hubService;
         private HashSet<string> freeUserNames { get; set; }
         public Level Level { get; set; }
-        public SendRequest()
+        public SendRequest(HubService hubService = null)
         {
             InitializeComponent();
             userService = new UserService();
             longOperation = new LongOperation(this);
+            this.hubService = hubService;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -53,7 +55,7 @@ namespace Riddles
             else
             {
                 longOperation.Start();
-                HubService.SendInvite(textBox1.Text, this).GetAwaiter().GetResult();
+                hubService.SendInvite(textBox1.Text, this).GetAwaiter().GetResult();
             }
         }
 

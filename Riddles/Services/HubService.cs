@@ -12,13 +12,13 @@ using System.Windows.Forms;
 
 namespace Riddles.Services
 {
-    public static class HubService
+    public class HubService
     {
-        private static readonly HubConnection hubConnection;
-        private static readonly HubHelper hubHelper;
-        private static SendRequest sendRequest;
+        private readonly HubConnection hubConnection;
+        private readonly HubHelper hubHelper;
+        private SendRequest sendRequest;
 
-        static HubService()
+        public HubService()
         {
             hubHelper = new HubHelper();
             hubConnection = new HubConnectionBuilder()
@@ -28,7 +28,7 @@ namespace Riddles.Services
             hubConnection.ServerTimeout = TimeSpan.FromMinutes(10);
             hubConnection.On<string>("Recieve", (message) =>
             {
-                Form1 form1 = new Form1();
+                Console.WriteLine("User connected");
             });
 
             hubConnection.On<string>("SendInvite", (userName) =>
@@ -42,8 +42,8 @@ namespace Riddles.Services
             });
         }
 
-        private static bool isBusy;
-        public static bool IsBusy
+        private bool isBusy;
+        public bool IsBusy
         {
             get
             {
@@ -59,8 +59,8 @@ namespace Riddles.Services
             }
         }
 
-        private static bool isConnected;
-        public static bool IsConnected
+        private bool isConnected;
+        public bool IsConnected
         {
             get => isConnected;
             set
@@ -73,7 +73,7 @@ namespace Riddles.Services
             }
         }
 
-        public static async Task Connect()
+        public async Task Connect()
         {
             if (IsConnected)
                 return;
@@ -90,7 +90,7 @@ namespace Riddles.Services
         }
 
         // Отключение от чата
-        public static async Task Disconnect()
+        public async Task Disconnect()
         {
             if (!IsConnected)
                 return;
@@ -99,24 +99,24 @@ namespace Riddles.Services
             IsConnected = false;
         }
 
-        public static async Task SendInvite(string userName, SendRequest form)
+        public async Task SendInvite(string userName, SendRequest form)
         {
             sendRequest = form;
             await hubConnection.InvokeAsync("SendInvite", userName);
         }
 
-        public static async Task AcceptInvite(string userName, bool accept)
+        public async Task AcceptInvite(string userName, bool accept)
         {
             await hubConnection.InvokeAsync("AcceptInvite", userName, accept);
         }
 
-        public static async void SendRequest()
+        public async void SendRequest()
         {
-            await hubConnection.InvokeAsync("Send", "Болит очко");
+            await hubConnection.InvokeAsync("Send", UserProfile.Login, "Подключение пользователя");
         }
 
-        public static event PropertyChangedEventHandler PropertyChanged;
-        public static void OnPropertyChanged(string prop = "")
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(new object(), new PropertyChangedEventArgs(prop));
