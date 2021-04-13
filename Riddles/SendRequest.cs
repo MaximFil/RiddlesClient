@@ -16,15 +16,17 @@ namespace Riddles
     {
         private readonly UserService userService;
         private readonly LongOperation longOperation;
-        private readonly HubService hubService;
+        private bool dispose;
+        //private readonly HubService hubService;
         private HashSet<string> freeUserNames { get; set; }
         public Level Level { get; set; }
-        public SendRequest(HubService hubService = null)
+        public SendRequest(/*HubService hubService = null*/)
         {
             InitializeComponent();
             userService = new UserService();
             longOperation = new LongOperation(this);
-            this.hubService = hubService;
+            dispose = true;
+            //this.hubService = hubService;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -45,7 +47,7 @@ namespace Riddles
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             freeUserNames = userService.GetFreeUserNames().GetAwaiter().GetResult();
             if (!freeUserNames.Contains(textBox1.Text))
@@ -54,8 +56,9 @@ namespace Riddles
             }
             else
             {
-                longOperation.Start();
-                hubService.SendInvite(textBox1.Text, this).GetAwaiter().GetResult();
+                dispose = false;
+                //longOperation.Start();
+                await HubService.SendInvite(textBox1.Text, this);
             }
         }
 
@@ -70,16 +73,25 @@ namespace Riddles
 
         public void AcceptInvite(bool accept)
         {
+            //longOperation.Stop();
             if (accept)
             {
-                longOperation.Stop();
-                Playground playground = new Playground(this.Level);
-                playground.Show();
-                this.Close();
+                //Playground playground = new Playground(this.Level);
+                //playground.Show();
+                //this.Close();
+                MessageBox.Show("All good!");
             }
             else
             {
-                MessageBox.Show($"Пользователь {textBox1.Text} отклонил вашу прглашение!", "Приглашения", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Пользователь {textBox1.Text} отклонил ваше прглашение!", "Приглашения", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void SendRequest_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (dispose)
+            {
+                Application.Exit();
             }
         }
     }

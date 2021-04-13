@@ -15,23 +15,27 @@ namespace Riddles
     public partial class Menu : Form
     {
         // public User User { get; set; }
-        private readonly HubService hubService;
-        public Menu(HubService hubService = null)
+        //private readonly HubService hubService;
+        private bool dispose;
+        public Menu(/*HubService hubService = null*/)
         {
             InitializeComponent();
-            this.hubService = hubService;
+            //this.hubService = hubService;
+            dispose = true;
             //this.User = user;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            SendRequest sendRequest = new SendRequest(hubService);
+            dispose = false;
+            SendRequest sendRequest = new SendRequest(/*hubService*/);
             sendRequest.Show();
             this.Close();
         }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
+            dispose = false;
             About_The_Game about_The_Game = new About_The_Game();
             about_The_Game.Show();
             this.Hide();
@@ -39,6 +43,7 @@ namespace Riddles
 
         private void button3_Click(object sender, EventArgs e)
         {
+            dispose = false;
             TableRecords records = new TableRecords();
             records.Show();
             this.Close();
@@ -46,7 +51,15 @@ namespace Riddles
 
         private void button4_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
+        }
+
+        private void Menu_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (dispose)
+            {
+                Application.Exit();
+            }
         }
     }
 }

@@ -48,21 +48,21 @@ namespace Riddles
         public Playground(Level level)
         {
             InitializeComponent();
-            var pos = this.PointToScreen(pictureBox2.Location);
-            pos = pictureBox1.PointToClient(pos);
-            pictureBox2.Parent = pictureBox1;
-            pictureBox2.Location = pos;
-            pictureBox2.BackColor = Color.Transparent;
-            this.Level = level;
-            this.RiddlesTextPath = String.Format("{0}{1}.txt", ConfigurationManager.AppSettings["path"], this.Level);
-            this.RiddlesAnswerPath = String.Format("{0}{1}Answer.txt", ConfigurationManager.AppSettings["path"], this.Level);
-            this.count = File.ReadAllLines(this.RiddlesTextPath).Length;
-            this.random = new Random();
-            this.passRiddlesNumber = new List<int>();
-            //this.InitializeRiddle();
-            this.textBoxList = new List<TextBox> { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14 };
-            Notify += function;
-            stopwatch = new Stopwatch();
+            //var pos = this.PointToScreen(pictureBox2.Location);
+            //pos = pictureBox1.PointToClient(pos);
+            //pictureBox2.Parent = pictureBox1;
+            //pictureBox2.Location = pos;
+            //pictureBox2.BackColor = Color.Transparent;
+            //this.Level = level;
+            //this.RiddlesTextPath = String.Format("{0}{1}.txt", ConfigurationManager.AppSettings["path"], this.Level);
+            //this.RiddlesAnswerPath = String.Format("{0}{1}Answer.txt", ConfigurationManager.AppSettings["path"], this.Level);
+            //this.count = File.ReadAllLines(this.RiddlesTextPath).Length;
+            //this.random = new Random();
+            //this.passRiddlesNumber = new List<int>();
+            ////this.InitializeRiddle();
+            //this.textBoxList = new List<TextBox> { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14 };
+            //Notify += function;
+            //stopwatch = new Stopwatch();
         }
         private string function(HintType hintType)
         {

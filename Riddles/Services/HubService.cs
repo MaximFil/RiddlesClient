@@ -12,13 +12,13 @@ using System.Windows.Forms;
 
 namespace Riddles.Services
 {
-    public class HubService
+    public static class HubService
     {
-        private readonly HubConnection hubConnection;
-        private readonly HubHelper hubHelper;
-        private SendRequest sendRequest;
+        private static readonly HubConnection hubConnection;
+        private static readonly HubHelper hubHelper;
+        private static SendRequest sendRequest;
 
-        public HubService()
+        static HubService()
         {
             hubHelper = new HubHelper();
             hubConnection = new HubConnectionBuilder()
@@ -42,8 +42,8 @@ namespace Riddles.Services
             });
         }
 
-        private bool isBusy;
-        public bool IsBusy
+        private static bool isBusy;
+        public static bool IsBusy
         {
             get
             {
@@ -59,8 +59,8 @@ namespace Riddles.Services
             }
         }
 
-        private bool isConnected;
-        public bool IsConnected
+        private static bool isConnected;
+        public static bool IsConnected
         {
             get => isConnected;
             set
@@ -73,7 +73,7 @@ namespace Riddles.Services
             }
         }
 
-        public async Task Connect()
+        public static async Task Connect()
         {
             if (IsConnected)
                 return;
@@ -90,7 +90,7 @@ namespace Riddles.Services
         }
 
         // Отключение от чата
-        public async Task Disconnect()
+        public static async Task Disconnect()
         {
             if (!IsConnected)
                 return;
@@ -99,24 +99,24 @@ namespace Riddles.Services
             IsConnected = false;
         }
 
-        public async Task SendInvite(string userName, SendRequest form)
+        public static async Task SendInvite(string userName, SendRequest form)
         {
             sendRequest = form;
             await hubConnection.InvokeAsync("SendInvite", userName);
         }
 
-        public async Task AcceptInvite(string userName, bool accept)
+        public static async Task AcceptInvite(string userName, bool accept)
         {
             await hubConnection.InvokeAsync("AcceptInvite", userName, accept);
         }
 
-        public async void SendRequest()
+        public static async void SendRequest()
         {
             await hubConnection.InvokeAsync("Send", UserProfile.Login, "Подключение пользователя");
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged(string prop = "")
+        public static event PropertyChangedEventHandler PropertyChanged;
+        public static void OnPropertyChanged(string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(new object(), new PropertyChangedEventArgs(prop));
