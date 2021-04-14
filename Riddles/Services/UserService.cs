@@ -113,16 +113,16 @@ namespace Riddles.Services
             }
         }
 
-        public async Task<HashSet<string>> GetFreeUserNames()
+        public async Task<Dictionary<string, int>> GetFreeUserNames()
         {
-            var result = new List<string>();
+            var result = new Dictionary<string, int>();
             var response = client.GetAsync($"api/user/GetFreeUserNames").GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
-                result = await response.Content.ReadAsAsync<List<string>>();
+                result = await response.Content.ReadAsAsync<Dictionary<string, int>>();
             }
 
-            return result.ToHashSet();
+            return result;
         }
     }
 }

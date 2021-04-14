@@ -15,18 +15,22 @@ namespace Riddles
     public partial class SendRequest : Form
     {
         private readonly UserService userService;
+        private readonly LevelService levelService;
+        private readonly GameSessionService gameSessionService;
         private readonly LongOperation longOperation;
-        private bool dispose;
-        //private readonly HubService hubService;
-        private HashSet<string> freeUserNames { get; set; }
-        public Level Level { get; set; }
-        public SendRequest(/*HubService hubService = null*/)
+        private int choosedUserId;
+        private bool dispose { get; set; }
+        private Dictionary<string, int> FreeUserNames { get; set; }
+        private Dictionary<string, int> Levels { get; set; }
+        private Level Level { get; set; }
+        public SendRequest()
         {
             InitializeComponent();
             userService = new UserService();
+            levelService = new LevelService();
+            gameSessionService = new GameSessionService();
             longOperation = new LongOperation(this);
             dispose = true;
-            //this.hubService = hubService;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -49,8 +53,9 @@ namespace Riddles
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            freeUserNames = userService.GetFreeUserNames().GetAwaiter().GetResult();
-            if (!freeUserNames.Contains(textBox1.Text))
+            FreeUserNames = userService.GetFreeUserNames().GetAwaiter().GetResult();
+
+            if (!FreeUserNames.TryGetValue(textBox1.Text, out choosedUserId))
             {
                 MessageBox.Show("Пользователь с таким именем не существует!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -79,7 +84,16 @@ namespace Riddles
                 //Playground playground = new Playground(this.Level);
                 //playground.Show();
                 //this.Close();
-                MessageBox.Show("All good!");
+                int levelId;
+                if(!Levels.TryGetValue(Level.ToString(), out levelId))
+                {
+                    MessageBox.Show("Возникли проблемы с уровнями. Попробуйте ещё раз!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    gameSessionService.CreateGameSession(UserProfile.Id, choosedUserId, levelId);
+                    MessageBox.Show("All good!");
+                }
             }
             else
             {
@@ -93,6 +107,11 @@ namespace Riddles
             {
                 Application.Exit();
             }
+        }
+
+        private async void SendRequest_Load(object sender, EventArgs e)
+        {
+            Levels = await levelService.GetLevels();
         }
     }
 }

@@ -216,7 +216,9 @@
     </Compile>
     <Compile Include="LevelEnum.cs" />
     <Compile Include="ResponseModels\ApiResponse.cs" />
+    <Compile Include="Services\GameSessionService.cs" />
     <Compile Include="Services\HubService.cs" />
+    <Compile Include="Services\LevelService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="TableRecords.cs">
       <SubType>Form</SubType>

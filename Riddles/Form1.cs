@@ -86,6 +86,7 @@ namespace Riddles
                 }
                 userService.ChangeActivityOfUser(User.Id, true);
 
+                UserProfile.Id = User.Id;
                 UserProfile.Login = User.Name;
                 UserProfile.Password = User.Password;
 

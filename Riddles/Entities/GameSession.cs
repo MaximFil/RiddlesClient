@@ -15,7 +15,7 @@ namespace Riddles.Entities
 
         public DateTime StartedDate { get; set; }
 
-        public DateTime FinishedDate { get; set; }
+        public DateTime? FinishedDate { get; set; }
 
         public bool IsCompleted { get; set; }
     }
