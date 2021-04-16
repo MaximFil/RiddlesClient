@@ -25,10 +25,10 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public GameSession CreateGameSession(int firstUserId, int secondUserId, int levelId)
+        public GameSession CreateGameSession(int firstUserId, int secondUserId, int levelId, int riddlesCount = 5)
         {
             var gameSession = new GameSession() { LevelId = levelId, StartedDate = DateTime.Now, FinishedDate = null, IsCompleted = false };
-            var response = client.PostAsJsonAsync<GameSession>($"api/gamesession/creategamesession/{firstUserId}/{secondUserId}", gameSession).GetAwaiter().GetResult();
+            var response = client.PostAsJsonAsync<GameSession>($"api/gamesession/creategamesession/{firstUserId}/{secondUserId}/{riddlesCount}", gameSession).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
                 var apiResponse = response.Content.ReadAsAsync<ApiResponse>().GetAwaiter().GetResult();

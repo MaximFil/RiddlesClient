@@ -11,6 +11,8 @@ using System.Configuration;
 using System.IO;
 using System.Diagnostics;
 using System.Data.Entity;
+using Riddles.Entities;
+using Riddles.Services;
 
 namespace Riddles
 {
@@ -21,6 +23,13 @@ namespace Riddles
     }
     public partial class Playground : Form
     {
+        private GameSession gameSession;
+        private List<Riddle> riddles;
+        private Riddle currentRiddle;
+        private RiddleService riddleService;
+        private Stopwatch stopwatch;
+        
+        
         private List<TextBox> textBoxList;
         private List<int> passRiddlesNumber;
         private int number;
@@ -39,15 +48,16 @@ namespace Riddles
         public string RiddleText { get; set; }
         public string RiddleAnswer { get; set; }
         public Level Level { get; set; }
-        private Stopwatch stopwatch;
+        
 
-        public Playground()
+        public Playground(GameSession gameSession)
         {
             InitializeComponent();
-        }
-        public Playground(Level level)
-        {
-            InitializeComponent();
+            this.gameSession = gameSession;
+            this.riddleService = new RiddleService();
+            this.textBoxList = new List<TextBox> { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14 };
+            stopwatch = new Stopwatch();
+            
             //var pos = this.PointToScreen(pictureBox2.Location);
             //pos = pictureBox1.PointToClient(pos);
             //pictureBox2.Parent = pictureBox1;
@@ -59,135 +69,133 @@ namespace Riddles
             //this.count = File.ReadAllLines(this.RiddlesTextPath).Length;
             //this.random = new Random();
             //this.passRiddlesNumber = new List<int>();
-            ////this.InitializeRiddle();
-            //this.textBoxList = new List<TextBox> { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14 };
             //Notify += function;
-            //stopwatch = new Stopwatch();
+            //
         }
-        private string function(HintType hintType)
-        {
-            var res = String.Empty;
-            if ((this.initialValue - (int)hintType) >= 0)
-            {
-                this.initialValue -= (int)hintType;
-                label2.Text = String.Format("Points for tips: {0}", this.initialValue);
-                var list = this.GetHintTextBoxes(hintType);
-                var chars = this.GetHintChars(hintType);
-                PutCharsInTextBoxes(list, chars);
-                res = "success";
-            }
-            else
-            {
-                res = "error";
-            }
-            return res;
-        }
-
-        private List<TextBox> GetHintTextBoxes(HintType hintType)
-        {
-            var res = new List<TextBox>();
-            if (hintType.Equals(HintType.HalfWord))
-            {
-                for (int i = 1; i < this.textBoxList.Where(t => t.Visible == true).Count(); i += 2)
-                {
-                    res.Add(textBoxList[i]);
-                }
-            }
-            else
-            {
-                res.AddRange(this.textBoxList.Where(t => t.Visible == true));
-            }
-            return res;
-        }
-        private List<char> GetHintChars(HintType hintType)
-        {
-            //var answerChars = this.Riddle.Answer.ToCharArray();
-            var res = new List<char>();
-            //if (hintType.Equals(HintType.HalfWord))
-            //{
-            //    for (int i = 1; i < answerChars.Length; i += 2)
-            //    {
-            //        res.Add(answerChars[i]);
-            //    }
-            //}
-            //else
-            //{
-            //    res.AddRange(answerChars);
-            //}
-            return res;
-        }
-
-        private void PutCharsInTextBoxes(List<TextBox> textBoxes, List<char> chars)
-        {
-            for (int i = 0; i < textBoxes.Count; i++)
-            {
-                textBoxes[i].Text = chars[i].ToString();
-            }
-        }
-
-        public static string UseHint(HintType hintType)
-        {
-            return Notify.Invoke(hintType);
-        }
-        //private Riddle InitializeRiddle()
+        //private string function(HintType hintType)
         //{
-        //    var availableRiddles = _context.Riddles.Include(r => r.Level).Include(r => r.Users).Where(r => r.Level.LevelName.Equals(this.Level.ToString()) && !r.Users.Any(u => u.Id == this.User.Id)).ToList();
-        //    var availbaleRiddleIds = availableRiddles.Select(r => r.Id).ToList();
-        //    var riddle = new Riddle();
-        //    while (true)
+        //    var res = String.Empty;
+        //    if ((this.initialValue - (int)hintType) >= 0)
         //    {
-        //        this.number = this.random.Next(availbaleRiddleIds.Min(), availbaleRiddleIds.Max());
-        //        riddle = availableRiddles.FirstOrDefault(r => r.Id == this.number);
-        //        if (riddle != null)
+        //        this.initialValue -= (int)hintType;
+        //        label2.Text = String.Format("Points for tips: {0}", this.initialValue);
+        //        var list = this.GetHintTextBoxes(hintType);
+        //        var chars = this.GetHintChars(hintType);
+        //        PutCharsInTextBoxes(list, chars);
+        //        res = "success";
+        //    }
+        //    else
+        //    {
+        //        res = "error";
+        //    }
+        //    return res;
+        //}
+
+        //private List<TextBox> GetHintTextBoxes(HintType hintType)
+        //{
+        //    var res = new List<TextBox>();
+        //    if (hintType.Equals(HintType.HalfWord))
+        //    {
+        //        for (int i = 1; i < this.textBoxList.Where(t => t.Visible == true).Count(); i += 2)
+        //        {
+        //            res.Add(textBoxList[i]);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        res.AddRange(this.textBoxList.Where(t => t.Visible == true));
+        //    }
+        //    return res;
+        //}
+        //private List<char> GetHintChars(HintType hintType)
+        //{
+        //    //var answerChars = this.Riddle.Answer.ToCharArray();
+        //    var res = new List<char>();
+        //    //if (hintType.Equals(HintType.HalfWord))
+        //    //{
+        //    //    for (int i = 1; i < answerChars.Length; i += 2)
+        //    //    {
+        //    //        res.Add(answerChars[i]);
+        //    //    }
+        //    //}
+        //    //else
+        //    //{
+        //    //    res.AddRange(answerChars);
+        //    //}
+        //    return res;
+        //}
+
+        //private void PutCharsInTextBoxes(List<TextBox> textBoxes, List<char> chars)
+        //{
+        //    for (int i = 0; i < textBoxes.Count; i++)
+        //    {
+        //        textBoxes[i].Text = chars[i].ToString();
+        //    }
+        //}
+
+        //public static string UseHint(HintType hintType)
+        //{
+        //    return Notify.Invoke(hintType);
+        //}
+        ////private Riddle InitializeRiddle()
+        ////{
+        ////    var availableRiddles = _context.Riddles.Include(r => r.Level).Include(r => r.Users).Where(r => r.Level.LevelName.Equals(this.Level.ToString()) && !r.Users.Any(u => u.Id == this.User.Id)).ToList();
+        ////    var availbaleRiddleIds = availableRiddles.Select(r => r.Id).ToList();
+        ////    var riddle = new Riddle();
+        ////    while (true)
+        ////    {
+        ////        this.number = this.random.Next(availbaleRiddleIds.Min(), availbaleRiddleIds.Max());
+        ////        riddle = availableRiddles.FirstOrDefault(r => r.Id == this.number);
+        ////        if (riddle != null)
+        ////        {
+        ////            break;
+        ////        }
+        ////    }
+        ////    return riddle;
+
+        ////}
+        //private string GetRiddleText(int number)
+        //{
+        //    string line;
+        //    int counter = 0;
+        //    while ((line = this.readerRiddle.ReadLine()) != null)
+        //    {
+        //        if (counter == number)
         //        {
         //            break;
         //        }
+        //        counter++;
         //    }
-        //    return riddle;
-
+        //    return line;
         //}
-        private string GetRiddleText(int number)
-        {
-            string line;
-            int counter = 0;
-            while ((line = this.readerRiddle.ReadLine()) != null)
-            {
-                if (counter == number)
-                {
-                    break;
-                }
-                counter++;
-            }
-            return line;
-        }
-        private string GetRiddleAnswer(int number)
-        {
-            string line;
-            int counter = 0;
-            while ((line = this.readerAnswer.ReadLine()) != null)
-            {
-                if (counter == number)
-                {
-                    break;
-                }
-                counter++;
-            }
-            return line;
-        }
-        private void ActionAfterResponse()
-        {
-            HideAllTextBox();
-            //this.Riddle = this.InitializeRiddle();
-            //label1.Text = this.Riddle.Text;
-            //VisibleNeededTextBox(this.Riddle.Answer);
-            CleanTextBox();
-        }
+        //private string GetRiddleAnswer(int number)
+        //{
+        //    string line;
+        //    int counter = 0;
+        //    while ((line = this.readerAnswer.ReadLine()) != null)
+        //    {
+        //        if (counter == number)
+        //        {
+        //            break;
+        //        }
+        //        counter++;
+        //    }
+        //    return line;
+        //}
+        //private void ActionAfterResponse()
+        //{
+        //    HideAllTextBox();
+        //    //this.Riddle = this.InitializeRiddle();
+        //    //label1.Text = this.Riddle.Text;
+        //    //VisibleNeededTextBox(this.Riddle.Answer);
+        //    CleanTextBox();
+        //}
 
-        private void CleanTextBox()
-        {
-            textBoxList.ForEach(t => t.Text = string.Empty);
-        }
-     
+        //private void CleanTextBox()
+        //{
+        //    textBoxList.ForEach(t => t.Text = string.Empty);
+        //}
+
         private void VisibleNeededTextBox(string answer)
         {
             textBoxList.Take(answer.Length).ToList().ForEach(t => t.Visible = true);
@@ -197,11 +205,12 @@ namespace Riddles
         {
             textBoxList.ForEach(t => t.Visible = false);
         }
-        private TextBox GetEmptyTextBox()
-        {
-            return textBoxList.FirstOrDefault(t => t.Text.Length == 0 && t.Visible == true);
 
-        }
+        //private TextBox GetEmptyTextBox()
+        //{
+        //    return textBoxList.FirstOrDefault(t => t.Text.Length == 0 && t.Visible == true);
+
+        //}
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -243,24 +252,33 @@ namespace Riddles
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            riddles = riddleService.GetRiddlesByGameSessionId(gameSession.Id);
             HideAllTextBox();
+            currentRiddle = GetRandomRiddle();
+            label1.Text = currentRiddle.Text;
+            VisibleNeededTextBox(currentRiddle.Answer);
+            stopwatch.Start();
             //label1.Text = this.Riddle.Text;
             //VisibleNeededTextBox(this.Riddle.Answer);
             //label2.Text = String.Format("Hint glasses: {0}", this.initialValue);
-            stopwatch.Start();
+            //
+        }
+
+        private Riddle GetRandomRiddle()
+        {
+            return riddles.OrderBy(r => Guid.NewGuid()).First();
         }
         private void pictureBox2_MouseEnter_1(object sender, EventArgs e)
         {
             if (!this.Focused)
             {
                 Hint hint = new Hint();
-                hint.ShowDialog();
             }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            GetEmptyTextBox()?.Focus();
+            //GetEmptyTextBox()?.Focus();
         }
         private void Form2_KeyUp(object sender, KeyEventArgs e)
         {
@@ -285,16 +303,6 @@ namespace Riddles
             var linkedList = new LinkedList<TextBox>(textBoxList);
             var listNode = linkedList.Find(textBox);
             return listNode?.Next?.Value?.Visible == true ? listNode?.Next?.Value : textBox;
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

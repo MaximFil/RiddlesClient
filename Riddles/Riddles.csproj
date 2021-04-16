@@ -219,6 +219,7 @@
     <Compile Include="Services\GameSessionService.cs" />
     <Compile Include="Services\HubService.cs" />
     <Compile Include="Services\LevelService.cs" />
+    <Compile Include="Services\RiddleService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="TableRecords.cs">
       <SubType>Form</SubType>
@@ -231,12 +232,6 @@
     </Compile>
     <Compile Include="Playground.Designer.cs">
       <DependentUpon>Playground.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Hint.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Hint.Designer.cs">
-      <DependentUpon>Hint.cs</DependentUpon>
     </Compile>
     <Compile Include="SendRequest.cs">
       <SubType>Form</SubType>
@@ -265,9 +260,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Playground.resx">
       <DependentUpon>Playground.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Hint.resx">
-      <DependentUpon>Hint.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SendRequest.resx">
       <DependentUpon>SendRequest.cs</DependentUpon>
