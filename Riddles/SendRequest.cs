@@ -12,25 +12,27 @@ using Riddles.Services;
 
 namespace Riddles
 {
-    public partial class SendRequest : Form
+    public partial class SendRequest : Form, ICloseble
     {
         private readonly UserService userService;
         private readonly LevelService levelService;
         private readonly GameSessionService gameSessionService;
         private readonly LongOperation longOperation;
         private int choosedUserId;
+        private int levelId;
         private bool dispose { get; set; }
         private Dictionary<string, int> FreeUserNames { get; set; }
         private Dictionary<string, int> Levels { get; set; }
         private Level Level { get; set; }
-        public SendRequest()
+        public SendRequest(bool dispose = true)
         {
             InitializeComponent();
             userService = new UserService();
             levelService = new LevelService();
             gameSessionService = new GameSessionService();
             longOperation = new LongOperation(this);
-            dispose = true;
+            this.dispose = dispose;
+            UserProfile.CurrentForm = this;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -53,7 +55,19 @@ namespace Riddles
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            if(UserProfile.Login == textBox1.Text)
+            {
+                MessageBox.Show("Вы не можете играть с самим собой:=)", "Странный запрос", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             FreeUserNames = userService.GetFreeUserNames().GetAwaiter().GetResult();
+
+            if (!Levels.TryGetValue(Level.ToString(), out levelId))
+            {
+                MessageBox.Show("Возникли проблемы с уровнями. Попробуйте ещё раз!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (!FreeUserNames.TryGetValue(textBox1.Text, out choosedUserId))
             {
@@ -76,24 +90,17 @@ namespace Riddles
             }
         }
 
-        public void AcceptInvite(bool accept)
+        public async void AcceptInvite(bool accept)
         {
             //longOperation.Stop();
             if (accept)
             {
-                //Playground playground = new Playground(this.Level);
-                //playground.Show();
-                //this.Close();
-                int levelId;
-                if(!Levels.TryGetValue(Level.ToString(), out levelId))
-                {
-                    MessageBox.Show("Возникли проблемы с уровнями. Попробуйте ещё раз!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    gameSessionService.CreateGameSession(UserProfile.Id, choosedUserId, levelId);
-                    MessageBox.Show("All good!");
-                }
+                var gameSession = gameSessionService.CreateGameSession(UserProfile.Id, choosedUserId, levelId);
+                await HubService.StartGame(textBox1.Text, gameSession.Id);
+                Playground playground = new Playground(gameSession);
+                playground.Show();
+                this.Close();
+                
             }
             else
             {
@@ -112,6 +119,11 @@ namespace Riddles
         private async void SendRequest_Load(object sender, EventArgs e)
         {
             Levels = await levelService.GetLevels();
+        }
+
+        public void CloseForm()
+        {
+            this?.Close();
         }
     }
 }

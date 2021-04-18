@@ -10,11 +10,12 @@ using System.Windows.Forms;
 
 namespace Riddles
 {
-    public partial class About_The_Game : Form
+    public partial class About_The_Game : Form, ICloseble
     {
         public About_The_Game()
         {
             InitializeComponent();
+            UserProfile.CurrentForm = this;
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -32,6 +33,11 @@ namespace Riddles
         private void About_The_Game_Load(object sender, EventArgs e)
         {
 
+        }
+        
+        public void CloseForm()
+        {
+            this?.Close();
         }
     }
 }

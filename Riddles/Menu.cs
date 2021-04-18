@@ -12,16 +12,17 @@ using Riddles.Services;
 
 namespace Riddles
 {
-    public partial class Menu : Form
+    public partial class Menu : Form, ICloseble
     {
         // public User User { get; set; }
         //private readonly HubService hubService;
         private bool dispose;
-        public Menu(/*HubService hubService = null*/)
+        public Menu(bool dispose = true)
         {
             InitializeComponent();
+            UserProfile.CurrentForm = this;
             //this.hubService = hubService;
-            dispose = true;
+            this.dispose = dispose;
             //this.User = user;
         }
 
@@ -60,6 +61,10 @@ namespace Riddles
             {
                 Application.Exit();
             }
+        }
+        public void CloseForm()
+        {
+            this?.Close();
         }
     }
 }

@@ -14,7 +14,7 @@ using System.Data.Entity;
 
 namespace Riddles
 {
-    public partial class TableRecords : Form
+    public partial class TableRecords : Form, ICloseble
     {
 
         //private readonly Context _context;
@@ -23,6 +23,7 @@ namespace Riddles
         public TableRecords()
         {
             InitializeComponent();
+            UserProfile.CurrentForm = this;
            // this.Record = record;
            // _context = new Context();
         }
@@ -55,6 +56,11 @@ namespace Riddles
         private void TableRecords_Load(object sender, EventArgs e)
         {
             //dataGridView1.DataSource = GetRecordsByLevel(this.Record.Level.LevelName);
+        }
+
+        public void CloseForm()
+        {
+            this?.Close();
         }
     }
     internal class Record

@@ -40,6 +40,11 @@ namespace Riddles.Services
             {
                 sendRequest.AcceptInvite(accept);
             });
+
+            hubConnection.On<int>("StartGame", (gameSessionId) =>
+            {
+                hubHelper.StartGame(gameSessionId);
+            });
         }
 
         private static bool isBusy;
@@ -108,6 +113,11 @@ namespace Riddles.Services
         public static async Task AcceptInvite(string userName, bool accept)
         {
             await hubConnection.InvokeAsync("AcceptInvite", userName, accept);
+        }
+
+        public static async Task StartGame(string userName, int gameSessionId)
+        {
+            await hubConnection.InvokeAsync("StartGame", userName, gameSessionId);
         }
 
         public static async void SendRequest()

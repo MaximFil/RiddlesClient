@@ -48,5 +48,17 @@ namespace Riddles.Services
 
             return gameSession;
         }
+
+        public GameSession GetGameSessionById(int gameSessionId)
+        {
+            GameSession gameSession = null;
+            var response = client.GetAsync($"api/gamesession/getgamesessionbyid/{gameSessionId}").GetAwaiter().GetResult();
+            if (response.IsSuccessStatusCode)
+            {
+                gameSession = response.Content.ReadAsAsync<GameSession>().GetAwaiter().GetResult();
+            }
+
+            return gameSession;
+        }
     }
 }
