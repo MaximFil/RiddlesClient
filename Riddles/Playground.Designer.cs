@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Playground));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -46,10 +47,16 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -59,18 +66,19 @@
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(600, 366);
+            this.pictureBox1.Size = new System.Drawing.Size(600, 429);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // label1
             // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.LemonChiffon;
+            this.label1.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.label1.Font = new System.Drawing.Font("Monotype Corsiva", 19.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.label1.Location = new System.Drawing.Point(48, 161);
+            this.label1.ForeColor = System.Drawing.Color.DarkMagenta;
+            this.label1.Location = new System.Drawing.Point(48, 212);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -81,10 +89,11 @@
             // 
             // textBox14
             // 
+            this.textBox14.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox14.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox14.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox14.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox14.Location = new System.Drawing.Point(490, 232);
+            this.textBox14.Location = new System.Drawing.Point(480, 309);
             this.textBox14.Margin = new System.Windows.Forms.Padding(2);
             this.textBox14.MaxLength = 1;
             this.textBox14.Name = "textBox14";
@@ -97,10 +106,11 @@
             // 
             // textBox13
             // 
+            this.textBox13.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox13.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox13.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox13.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox13.Location = new System.Drawing.Point(464, 232);
+            this.textBox13.Location = new System.Drawing.Point(454, 309);
             this.textBox13.Margin = new System.Windows.Forms.Padding(2);
             this.textBox13.MaxLength = 1;
             this.textBox13.Name = "textBox13";
@@ -113,10 +123,11 @@
             // 
             // textBox12
             // 
+            this.textBox12.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox12.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox12.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox12.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox12.Location = new System.Drawing.Point(437, 232);
+            this.textBox12.Location = new System.Drawing.Point(427, 309);
             this.textBox12.Margin = new System.Windows.Forms.Padding(2);
             this.textBox12.MaxLength = 1;
             this.textBox12.Name = "textBox12";
@@ -129,10 +140,11 @@
             // 
             // textBox11
             // 
+            this.textBox11.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox11.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox11.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox11.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox11.Location = new System.Drawing.Point(411, 232);
+            this.textBox11.Location = new System.Drawing.Point(401, 309);
             this.textBox11.Margin = new System.Windows.Forms.Padding(2);
             this.textBox11.MaxLength = 1;
             this.textBox11.Name = "textBox11";
@@ -145,10 +157,11 @@
             // 
             // textBox10
             // 
+            this.textBox10.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox10.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox10.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox10.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox10.Location = new System.Drawing.Point(385, 232);
+            this.textBox10.Location = new System.Drawing.Point(375, 309);
             this.textBox10.Margin = new System.Windows.Forms.Padding(2);
             this.textBox10.MaxLength = 1;
             this.textBox10.Name = "textBox10";
@@ -161,10 +174,11 @@
             // 
             // textBox9
             // 
+            this.textBox9.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox9.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox9.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox9.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox9.Location = new System.Drawing.Point(358, 232);
+            this.textBox9.Location = new System.Drawing.Point(348, 309);
             this.textBox9.Margin = new System.Windows.Forms.Padding(2);
             this.textBox9.MaxLength = 1;
             this.textBox9.Name = "textBox9";
@@ -177,10 +191,11 @@
             // 
             // textBox8
             // 
+            this.textBox8.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox8.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox8.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox8.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox8.Location = new System.Drawing.Point(332, 232);
+            this.textBox8.Location = new System.Drawing.Point(322, 309);
             this.textBox8.Margin = new System.Windows.Forms.Padding(2);
             this.textBox8.MaxLength = 1;
             this.textBox8.Name = "textBox8";
@@ -193,10 +208,11 @@
             // 
             // textBox7
             // 
+            this.textBox7.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox7.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox7.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox7.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox7.Location = new System.Drawing.Point(306, 232);
+            this.textBox7.Location = new System.Drawing.Point(296, 309);
             this.textBox7.Margin = new System.Windows.Forms.Padding(2);
             this.textBox7.MaxLength = 1;
             this.textBox7.Name = "textBox7";
@@ -209,10 +225,11 @@
             // 
             // textBox6
             // 
+            this.textBox6.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox6.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox6.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox6.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox6.Location = new System.Drawing.Point(280, 232);
+            this.textBox6.Location = new System.Drawing.Point(270, 309);
             this.textBox6.Margin = new System.Windows.Forms.Padding(2);
             this.textBox6.MaxLength = 1;
             this.textBox6.Name = "textBox6";
@@ -225,10 +242,11 @@
             // 
             // textBox5
             // 
+            this.textBox5.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox5.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox5.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox5.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox5.Location = new System.Drawing.Point(254, 232);
+            this.textBox5.Location = new System.Drawing.Point(244, 309);
             this.textBox5.Margin = new System.Windows.Forms.Padding(2);
             this.textBox5.MaxLength = 1;
             this.textBox5.Name = "textBox5";
@@ -241,10 +259,11 @@
             // 
             // textBox4
             // 
+            this.textBox4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox4.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox4.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox4.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox4.Location = new System.Drawing.Point(227, 232);
+            this.textBox4.Location = new System.Drawing.Point(217, 309);
             this.textBox4.Margin = new System.Windows.Forms.Padding(2);
             this.textBox4.MaxLength = 1;
             this.textBox4.Name = "textBox4";
@@ -257,10 +276,11 @@
             // 
             // textBox3
             // 
+            this.textBox3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox3.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox3.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox3.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox3.Location = new System.Drawing.Point(201, 232);
+            this.textBox3.Location = new System.Drawing.Point(191, 309);
             this.textBox3.Margin = new System.Windows.Forms.Padding(2);
             this.textBox3.MaxLength = 1;
             this.textBox3.Name = "textBox3";
@@ -273,10 +293,11 @@
             // 
             // textBox2
             // 
+            this.textBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox2.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox2.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox2.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox2.Location = new System.Drawing.Point(175, 232);
+            this.textBox2.Location = new System.Drawing.Point(165, 309);
             this.textBox2.Margin = new System.Windows.Forms.Padding(2);
             this.textBox2.MaxLength = 1;
             this.textBox2.Name = "textBox2";
@@ -289,10 +310,11 @@
             // 
             // textBox1
             // 
+            this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBox1.BackColor = System.Drawing.Color.LemonChiffon;
             this.textBox1.Font = new System.Drawing.Font("Monotype Corsiva", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox1.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.textBox1.Location = new System.Drawing.Point(148, 232);
+            this.textBox1.Location = new System.Drawing.Point(138, 309);
             this.textBox1.Margin = new System.Windows.Forms.Padding(2);
             this.textBox1.MaxLength = 1;
             this.textBox1.Name = "textBox1";
@@ -305,50 +327,123 @@
             // 
             // button1
             // 
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button1.BackColor = System.Drawing.Color.LemonChiffon;
             this.button1.Font = new System.Drawing.Font("Monotype Corsiva", 16.2F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button1.ForeColor = System.Drawing.Color.DarkOliveGreen;
-            this.button1.Location = new System.Drawing.Point(269, 326);
+            this.button1.Location = new System.Drawing.Point(249, 378);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.button1.Size = new System.Drawing.Size(96, 40);
+            this.button1.Size = new System.Drawing.Size(122, 40);
             this.button1.TabIndex = 53;
-            this.button1.Text = "Answer";
+            this.button1.Text = "Ответить";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label2.Font = new System.Drawing.Font("Monotype Corsiva", 16.2F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.ForeColor = System.Drawing.Color.DarkMagenta;
-            this.label2.Location = new System.Drawing.Point(506, 133);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 26);
-            this.label2.TabIndex = 70;
-            this.label2.Text = "label2";
-            // 
             // pictureBox2
             // 
+            this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(502, 0);
+            this.pictureBox2.Location = new System.Drawing.Point(502, 31);
             this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(98, 119);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 69;
             this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.LemonChiffon;
+            this.label3.Font = new System.Drawing.Font("Monotype Corsiva", 19.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label3.ForeColor = System.Drawing.Color.DarkOliveGreen;
+            this.label3.Location = new System.Drawing.Point(48, 40);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label3.Size = new System.Drawing.Size(26, 33);
+            this.label3.TabIndex = 71;
+            this.label3.Text = "?";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.LemonChiffon;
+            this.label4.Font = new System.Drawing.Font("Monotype Corsiva", 19.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label4.ForeColor = System.Drawing.Color.DarkOliveGreen;
+            this.label4.Location = new System.Drawing.Point(48, 93);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Name = "label4";
+            this.label4.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label4.Size = new System.Drawing.Size(26, 33);
+            this.label4.TabIndex = 72;
+            this.label4.Text = "?";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.LemonChiffon;
+            this.label5.Font = new System.Drawing.Font("Monotype Corsiva", 19.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.ForeColor = System.Drawing.Color.DarkOliveGreen;
+            this.label5.Location = new System.Drawing.Point(48, 146);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Name = "label5";
+            this.label5.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label5.Size = new System.Drawing.Size(26, 33);
+            this.label5.TabIndex = 73;
+            this.label5.Text = "?";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // button2
+            // 
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button2.BackColor = System.Drawing.Color.LemonChiffon;
+            this.button2.Font = new System.Drawing.Font("Monotype Corsiva", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button2.ForeColor = System.Drawing.Color.DarkOliveGreen;
+            this.button2.Location = new System.Drawing.Point(11, 390);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Name = "button2";
+            this.button2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.button2.Size = new System.Drawing.Size(96, 28);
+            this.button2.TabIndex = 74;
+            this.button2.Text = "Сдаться";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Location = new System.Drawing.Point(492, 234);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox3.TabIndex = 75;
+            this.pictureBox3.TabStop = false;
+            this.pictureBox3.Visible = false;
             // 
             // Playground
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 366);
-            this.Controls.Add(this.label2);
+            this.ClientSize = new System.Drawing.Size(600, 429);
+            this.Controls.Add(this.pictureBox3);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox14);
@@ -376,6 +471,7 @@
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form2_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -400,7 +496,12 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.PictureBox pictureBox3;
     }
 }

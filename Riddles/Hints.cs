@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Riddles
 {
-    public enum HintType
+    public static class Hints
     {
-        OneChar,
-        HalfWord,
-        FullWord
+        public static Dictionary<string, Entities.Hint> DictionaryHints { get; set; }
     }
 }

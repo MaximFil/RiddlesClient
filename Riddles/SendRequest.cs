@@ -17,20 +17,16 @@ namespace Riddles
         private readonly UserService userService;
         private readonly LevelService levelService;
         private readonly GameSessionService gameSessionService;
-        private readonly LongOperation longOperation;
         private int choosedUserId;
-        private int levelId;
+        private Entities.Level level;
         private bool dispose { get; set; }
         private Dictionary<string, int> FreeUserNames { get; set; }
-        private Dictionary<string, int> Levels { get; set; }
-        private Level Level { get; set; }
         public SendRequest(bool dispose = true)
         {
             InitializeComponent();
             userService = new UserService();
             levelService = new LevelService();
             gameSessionService = new GameSessionService();
-            longOperation = new LongOperation(this);
             this.dispose = dispose;
             UserProfile.CurrentForm = this;
         }
@@ -40,7 +36,7 @@ namespace Riddles
             RadioButton radioButton = (RadioButton)sender;
             if (radioButton.Checked)
             {
-                Level = Level.Easy;
+                UserProfile.Level = Levels.DictionaryLevels[Level.Easy.ToString()];
             }
         }
 
@@ -49,7 +45,7 @@ namespace Riddles
             RadioButton radioButton = (RadioButton)sender;
             if (radioButton.Checked)
             {
-                Level = Level.Hard;
+                UserProfile.Level = Levels.DictionaryLevels[Level.Hard.ToString()];
             }
         }
 
@@ -63,7 +59,7 @@ namespace Riddles
 
             FreeUserNames = userService.GetFreeUserNames().GetAwaiter().GetResult();
 
-            if (!Levels.TryGetValue(Level.ToString(), out levelId))
+            if (!Levels.DictionaryLevels.TryGetValue(UserProfile.Level.LevelName, out level))
             {
                 MessageBox.Show("Возникли проблемы с уровнями. Попробуйте ещё раз!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -76,8 +72,11 @@ namespace Riddles
             else
             {
                 dispose = false;
-                //longOperation.Start();
-                await HubService.SendInvite(textBox1.Text, this);
+                await HubService.SendInvite(textBox1.Text, UserProfile.Level.LevelName.ToString(), this);
+                UserProfile.RivalName = textBox1.Text;
+                pictureBox1.Image = Image.FromFile(@"Resources/99px_ru_animacii_20594_kot_krutitsja_kak_kolesiko_zagruzki.gif");
+                pictureBox1.Dock = DockStyle.Fill;
+                pictureBox1.Visible = true;
             }
         }
 
@@ -86,25 +85,24 @@ namespace Riddles
             RadioButton radioButton = (RadioButton)sender;
             if (radioButton.Checked)
             {
-                Level = Level.Middle;
+                UserProfile.Level = Levels.DictionaryLevels[Level.Middle.ToString()];
             }
         }
 
         public async void AcceptInvite(bool accept)
         {
-            //longOperation.Stop();
             if (accept)
             {
-                var gameSession = gameSessionService.CreateGameSession(UserProfile.Id, choosedUserId, levelId);
+                var gameSession = gameSessionService.CreateGameSession(UserProfile.Id, choosedUserId, level.Id);
                 await HubService.StartGame(textBox1.Text, gameSession.Id);
                 Playground playground = new Playground(gameSession);
                 playground.Show();
                 this.Close();
-                
             }
             else
             {
                 MessageBox.Show($"Пользователь {textBox1.Text} отклонил ваше прглашение!", "Приглашения", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                pictureBox1.Visible = false;
             }
         }
 
@@ -116,14 +114,15 @@ namespace Riddles
             }
         }
 
-        private async void SendRequest_Load(object sender, EventArgs e)
-        {
-            Levels = await levelService.GetLevels();
-        }
-
         public void CloseForm()
         {
             this?.Close();
+        }
+
+        private void SendRequest_Load(object sender, EventArgs e)
+        {
+            radioButton2.Checked = true;
+            pictureBox1.Visible = false;
         }
     }
 }

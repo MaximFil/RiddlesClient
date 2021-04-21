@@ -197,6 +197,7 @@
     <Compile Include="Entities\Level.cs" />
     <Compile Include="Entities\Riddle.cs" />
     <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\XrefGameSessionUser.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -210,6 +211,7 @@
       <DependentUpon>About the game.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\HubHelper.cs" />
+    <Compile Include="Hints.cs" />
     <Compile Include="HintType.cs" />
     <Compile Include="ICloseble.cs" />
     <Compile Include="Invite.cs">
@@ -219,10 +221,18 @@
       <DependentUpon>Invite.cs</DependentUpon>
     </Compile>
     <Compile Include="LevelEnum.cs" />
+    <Compile Include="Levels.cs" />
     <Compile Include="ResponseModels\ApiResponse.cs" />
+    <Compile Include="ResultForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ResultForm.Designer.cs">
+      <DependentUpon>ResultForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\AnswerHistoryService.cs" />
     <Compile Include="Services\GameSessionService.cs" />
     <Compile Include="Services\GameSessionUseHintHistoryService.cs" />
+    <Compile Include="Services\HintService.cs" />
     <Compile Include="Services\HubService.cs" />
     <Compile Include="Services\LevelService.cs" />
     <Compile Include="Services\RiddleService.cs" />
@@ -273,6 +283,9 @@
     <EmbeddedResource Include="Playground.resx">
       <DependentUpon>Playground.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ResultForm.resx">
+      <DependentUpon>ResultForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SendRequest.resx">
       <DependentUpon>SendRequest.cs</DependentUpon>
     </EmbeddedResource>
@@ -287,6 +300,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="TableRecords.resx">
       <DependentUpon>TableRecords.cs</DependentUpon>
@@ -308,7 +322,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\99px_ru_animacii_20594_kot_krutitsja_kak_kolesiko_zagruzki.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

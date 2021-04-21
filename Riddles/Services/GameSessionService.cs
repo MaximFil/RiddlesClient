@@ -60,5 +60,69 @@ namespace Riddles.Services
 
             return gameSession;
         }
+
+        public void CompleteGameSession(int gameSessionId)
+        {
+            try
+            {
+                client.PutAsJsonAsync("api/gamesession/completegamesession", gameSessionId).GetAwaiter().GetResult();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public void CompleteGameSessionForUser(int gameSessionId, int userId, string totalTime, int totalUserPoints)
+        {
+            try
+            {
+                var gameSessionForUser = new XrefGameSessionUser()
+                {
+                    GameSessionID = gameSessionId,
+                    UserId = userId,
+                    TotalTime = totalTime,
+                    Points = totalUserPoints,
+                    Finished = true
+                };
+                var response = client.PutAsJsonAsync<XrefGameSessionUser>("api/gamesession/completegamesessionforuser", gameSessionForUser).GetAwaiter().GetResult();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public XrefGameSessionUser GetGameSessionUser(int gameSessionId, string userName)
+        {
+            try
+            {
+                var response = client.GetAsync($"api/gamesession/getcompletegamesessionuser/{gameSessionId}/{userName}").GetAwaiter().GetResult();
+                if (response.IsSuccessStatusCode)
+                {
+                    return response.Content.ReadAsAsync<XrefGameSessionUser>().GetAwaiter().GetResult();
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public void SurrenderGameSessionUser(int gameSessionId, string userName)
+        {
+            try
+            {
+                client.PutAsJsonAsync($"api/gamesession/surrendergamesessionuser/{gameSessionId}/{userName}", true).GetAwaiter().GetResult();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

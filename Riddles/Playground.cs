@@ -19,18 +19,24 @@ namespace Riddles
     public partial class Playground : Form
     {
         private readonly GameSessionUseHintHistoryService hintHistoryService;
-        private GameSession gameSession;
-        private List<Riddle> riddles;
-        private Riddle currentRiddle;
-        private RiddleService riddleService;
-        private Stopwatch stopwatch;
+        private readonly AnswerHistoryService answerHistoryService;
+        private readonly UserService userService;
+        private readonly GameSessionService gameSessionService;
+        private GameSession gameSession { get; set; }
+        private List<Riddle> riddles { get; set; }
+        private Riddle currentRiddle { get; set; }
+        private RiddleService riddleService { get; set; }
         public delegate Tuple<string, string> usingHint(HintType hintType);
         public static event usingHint Notify;
+        public delegate void surrenderRequest(string rivalName);
+        public static event surrenderRequest SurrenderNotify;
         public int HintPoints { get; set; } = 10;
-        private List<TextBoxModel> textBoxModelsList;
-        private readonly UserService userService;
-        private bool dispose;
-        private readonly AnswerHistoryService answerHistoryService;
+        private List<TextBoxModel> textBoxModelsList { get; set; }
+        private bool dispose { get; set; }
+        private DateTime timeTimer { get; set; }
+        private DateTime totalTime { get; set; }
+        private int pointsForOneRiddle { get; set; }
+        private int totalUserPoints { get; set; }
 
 
         private List<int> passRiddlesNumber;
@@ -51,14 +57,20 @@ namespace Riddles
         {
             InitializeComponent();
             this.gameSession = gameSession;
+            UserProfile.GamaSessionId = gameSession.Id;
             this.riddleService = new RiddleService();
             this.userService = new UserService();
             hintHistoryService = new GameSessionUseHintHistoryService();
             this.answerHistoryService = new AnswerHistoryService();
+            this.gameSessionService = new GameSessionService();
             textBoxModelsList = InitTextBoxModels();
-            stopwatch = new Stopwatch();
             Notify += FunctionOfUsingHint;
+            SurrenderNotify += SurrenderAction;
             dispose = true;
+            this.timeTimer = new DateTime(1, 1, 1, 1, 0, 0).AddSeconds(UserProfile.Level.LevelTime);
+            this.totalTime = new DateTime(1, 1, 1, 1, 0, 0);
+            this.pointsForOneRiddle = 10;
+            this.totalUserPoints = 0;
 
             //var pos = this.PointToScreen(pictureBox2.Location);
             //pos = pictureBox1.PointToClient(pos);
@@ -101,8 +113,10 @@ namespace Riddles
             var message = string.Empty;
             if ((this.HintPoints - (int)hintType) >= 0)
             {
-                this.HintPoints -= (int)hintType;
-                label2.Text = String.Format("Очки подсказок: {0}", this.HintPoints);
+                this.HintPoints -= Hints.DictionaryHints[hintType.ToString()].Cost;
+                this.totalUserPoints -= Hints.DictionaryHints[hintType.ToString()].Cost;
+                label5.Text = String.Format("Очки подсказок: {0}", this.HintPoints);
+                label4.Text = string.Format("Очки пользователя: {0}", totalUserPoints);
                 int countTextBoxesForOpen = 1;
                 if(hintType == HintType.OneChar)
                 {
@@ -163,20 +177,11 @@ namespace Riddles
             return Notify.Invoke(hintType);
         }
 
-
-        //private void ActionAfterResponse()
-        //{
-        //    HideAllTextBox();
-        //    //this.Riddle = this.InitializeRiddle();
-        //    //label1.Text = this.Riddle.Text;
-        //    //VisibleNeededTextBox(this.Riddle.Answer);
-        //    CleanTextBox();
-        //}
-
-        //private void CleanTextBox()
-        //{
-        //    textBoxList.ForEach(t => t.Text = string.Empty);
-        //}
+        private void CleanTextBox()
+        {
+            textBoxModelsList.ForEach(t => t.TextBox.Text = string.Empty);
+            textBoxModelsList.ForEach(t => t.Correct = false);
+        }
 
         private void VisibleNeededTextBox(string answer)
         {
@@ -204,17 +209,45 @@ namespace Riddles
                 currentRiddle = GetNextRiddle();
                 if(currentRiddle == null)
                 {
-                    MessageBox.Show("You are winner");
+                    gameSessionService.CompleteGameSessionForUser(gameSession.Id, UserProfile.Id, totalTime.ToString("m:s"), totalUserPoints);
+                    var isFinishedRival = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName).Finished;
+                    if (!isFinishedRival)
+                    {
+                        MessageBox.Show("Пожалуйста подождите пока ваш соперник не закончит игру.\nВы автоматичски будете переброшенны на страницу результатов!", "Игра окончена", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        pictureBox3.Image = Image.FromFile(@"Resources/99px_ru_animacii_20594_kot_krutitsja_kak_kolesiko_zagruzki.gif");
+                        pictureBox3.Dock = DockStyle.Fill;
+                        pictureBox3.Visible = true;
+                    }
+                    else
+                    {
+                        gameSessionService.CompleteGameSession(gameSession.Id);
+                        var rivalGameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
+                        ResultForm resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, rivalGameSessionUser.TotalTime, rivalGameSessionUser.Points);
+                        resultForm.Show();
+                        dispose = true;
+                        this.Close();
+                    }
                 }
-
-                HideAllTextBox();
-                label1.Text = currentRiddle.Text;
-                VisibleNeededTextBox(currentRiddle.Answer);
+                else
+                {
+                    HideAllTextBox();
+                    label1.Text = currentRiddle.Text;
+                    VisibleNeededTextBox(currentRiddle.Answer);
+                    CleanTextBox();
+                    totalUserPoints += pointsForOneRiddle;
+                    label4.Text = string.Format("Очки пользователя: {0}", totalUserPoints);
+                }
+                
             }
             else
             {
                 MessageBox.Show("Ответ неверный!\nПопробуйте ещё раз.", "Ответ", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void ActionAfterFinishPlaying()
+        {
+            timer1.Stop();
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -230,8 +263,10 @@ namespace Riddles
             currentRiddle = GetNextRiddle();
             label1.Text = currentRiddle.Text;
             VisibleNeededTextBox(currentRiddle.Answer);
-            label2.Text = String.Format("Очки подсказок: {0}", this.HintPoints);
-            stopwatch.Start();
+            label5.Text = String.Format("Очки подсказок: {0}", this.HintPoints);
+            label3.Text = timeTimer.ToString("m:ss");
+            label4.Text = "Очки пользователя: 0";
+            timer1.Start();
         }
 
         private Riddle GetNextRiddle()
@@ -296,23 +331,61 @@ namespace Riddles
                 useHint.Show();
             }
         }
+
+
+        private void Playground_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!dispose)
+            {
+                var dialogResult = MessageBox.Show("Вы действительно хотите выйти из приложения?", "Выход", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Application.Exit();
+                }
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timeTimer = timeTimer.AddSeconds(-1);
+            totalTime.AddSeconds(1);
+            label3.Text = timeTimer.ToString("m:ss");
+            if(timeTimer.Minute == 0 && timeTimer.Second == 0)
+            {
+                timer1.Stop();
+                MessageBox.Show("Время вышло");
+            }
+        }        
+        
         private class TextBoxModel
         {
             public TextBox TextBox { get; set; }
-
-            public string Char { get; set; } = string.Empty;
 
             public bool Correct { get; set; } = false;
 
             public int Index { get; set; }
         }
 
-        private void Playground_FormClosing(object sender, FormClosingEventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-            if (dispose)
-            {
-                Application.Exit();
-            }
+            gameSessionService.SurrenderGameSessionUser(gameSession.Id, UserProfile.Login);
+            HubService.Surrender(UserProfile.Login, UserProfile.RivalName);
+        }
+
+        public static void SurrenderRival(string rivalName)
+        {
+            MessageBox.Show($"Ваш соперник {rivalName} сдался!\nВы будете перенаправлены на форму результатов!", "Победа", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            SurrenderNotify.Invoke(rivalName);
+        }
+
+        private void SurrenderAction(string rivalName)
+        {
+            gameSessionService.CompleteGameSession(gameSession.Id);
+            var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, rivalName);
+            var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points, true);
+            resultForm.Show();
+            this.Close();
         }
     }
 }

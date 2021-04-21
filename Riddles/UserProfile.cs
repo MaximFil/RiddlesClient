@@ -15,6 +15,12 @@ namespace Riddles
 
         public static string Password { get; set; }
 
+        public static Entities.Level Level { get; set; }
+
+        public static int GamaSessionId { get; set; }
+
+        public static string RivalName { get; set; }
+
         public static ICloseble CurrentForm { get; set; } 
     }
 }

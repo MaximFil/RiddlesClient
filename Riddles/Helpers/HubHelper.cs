@@ -17,9 +17,9 @@ namespace Riddles.Helpers
             gameSessionService = new GameSessionService();
         }
 
-        public void SendInvite(string userName)
+        public void SendInvite(string userName, string levelName)
         {
-            var inviteForm = new Invite(userName);
+            var inviteForm = new Invite(userName, levelName);
             inviteForm.Show();
         }
 
@@ -29,6 +29,11 @@ namespace Riddles.Helpers
             Playground playground = new Playground(gameSession);
             playground.Show();
             //UserProfile.CurrentForm.CloseForm();
+        }
+
+        public void Surrender(string userName)
+        {
+            Playground.SurrenderRival(userName);
         }
     }
 }

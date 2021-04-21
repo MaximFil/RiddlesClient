@@ -14,22 +14,22 @@ namespace Riddles
 {
     public partial class Menu : Form, ICloseble
     {
-        // public User User { get; set; }
-        //private readonly HubService hubService;
+        private readonly LevelService levelService;
+        private readonly HintService hintService;
         private bool dispose;
         public Menu(bool dispose = true)
         {
             InitializeComponent();
             UserProfile.CurrentForm = this;
-            //this.hubService = hubService;
-            this.dispose = dispose;
-            //this.User = user;
+            levelService = new LevelService();
+            this.hintService = new HintService();
+            dispose = dispose;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
             dispose = false;
-            SendRequest sendRequest = new SendRequest(/*hubService*/);
+            SendRequest sendRequest = new SendRequest();
             sendRequest.Show();
             this.Close();
         }
@@ -65,6 +65,14 @@ namespace Riddles
         public void CloseForm()
         {
             this?.Close();
+        }
+
+        private void Menu_Load(object sender, EventArgs e)
+        {
+            var levels = levelService.GetLevels();
+            Levels.DictionaryLevels = levels.ToDictionary(l => l.LevelName);
+            var hints = hintService.GetHints();
+            Hints.DictionaryHints = hints.ToDictionary(h => h.Name);
         }
     }
 }

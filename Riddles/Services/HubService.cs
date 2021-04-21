@@ -31,9 +31,9 @@ namespace Riddles.Services
                 Console.WriteLine("User connected");
             });
 
-            hubConnection.On<string>("SendInvite", (userName) =>
+            hubConnection.On<string, string>("SendInvite", (userName, levelName) =>
             {
-                hubHelper.SendInvite(userName);
+                hubHelper.SendInvite(userName, levelName);
             });
 
             hubConnection.On<bool>("AcceptInvite", (accept) =>
@@ -44,6 +44,11 @@ namespace Riddles.Services
             hubConnection.On<int>("StartGame", (gameSessionId) =>
             {
                 hubHelper.StartGame(gameSessionId);
+            });
+
+            hubConnection.On<string>("Surrender", (userName) =>
+            {
+                hubHelper.Surrender(userName);
             });
         }
 
@@ -104,10 +109,10 @@ namespace Riddles.Services
             IsConnected = false;
         }
 
-        public static async Task SendInvite(string userName, SendRequest form)
+        public static async Task SendInvite(string userName, string levelName, SendRequest form)
         {
             sendRequest = form;
-            await hubConnection.InvokeAsync("SendInvite", userName);
+            await hubConnection.InvokeAsync("SendInvite", userName, levelName);
         }
 
         public static async Task AcceptInvite(string userName, bool accept)
@@ -123,6 +128,12 @@ namespace Riddles.Services
         public static async void SendRequest()
         {
             await hubConnection.InvokeAsync("Send", UserProfile.Login, "Подключение пользователя");
+        }
+
+        //сдаваться
+        public static async void Surrender(string userName, string rivalName)
+        {
+            await hubConnection.InvokeAsync("Surrender", userName, rivalName);
         }
 
         public static event PropertyChangedEventHandler PropertyChanged;

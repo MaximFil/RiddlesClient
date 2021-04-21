@@ -15,16 +15,20 @@ namespace Riddles
     public partial class Invite : Form
     {
         private readonly string userName;
-        public Invite(string userName = "")
+        private readonly string levelName;
+        public Invite(string userName = "", string levelName = "")
         {
             InitializeComponent();
-            label1.Text = string.Format("{0} хочет сыграть с вами.", userName);
+            label1.Text = string.Format("{0} хочет сыграть с вами на уровне {1}.", userName, levelName);
             this.userName = userName;
+            this.levelName = levelName;
         }
 
         private async void button1_Click(object sender, EventArgs e)
         {
             await HubService.AcceptInvite(userName, true);
+            UserProfile.Level = Levels.DictionaryLevels[levelName];
+            UserProfile.RivalName = userName;
             this.Close();
         }
 

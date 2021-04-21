@@ -12,11 +12,6 @@ namespace Riddles.Entities
 
         public string LevelName { get; set; }
 
-        public List<Riddle> Riddles { get; set; }
-
-        public Level()
-        {
-            Riddles = new List<Riddle>();
-        }
+        public int LevelTime { get; set; }
     }
 }

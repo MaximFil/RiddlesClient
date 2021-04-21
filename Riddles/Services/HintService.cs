@@ -8,15 +8,14 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Riddles.Entities;
 
 namespace Riddles.Services
 {
-    public class LevelService
+    public class HintService
     {
         private readonly HttpClient client;
 
-        public LevelService()
+        public HintService()
         {
             client = new HttpClient();
             client.BaseAddress = new Uri(ConfigurationManager.AppSettings["hostAddress"]);
@@ -25,16 +24,16 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public List<Entities.Level> GetLevels()
+        public List<Entities.Hint> GetHints()
         {
-            var levels = new List<Entities.Level>();
-            var response = client.GetAsync($"api/level/getlevels/").GetAwaiter().GetResult();
+            var hints = new List<Entities.Hint>();
+            var response = client.GetAsync($"api/hint/gethints/").GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
                 var apiResponse = response.Content.ReadAsAsync<ApiResponse>().GetAwaiter().GetResult();
                 if (apiResponse.Success)
                 {
-                    levels = JsonConvert.DeserializeObject<List<Entities.Level>>(apiResponse.Json);
+                    hints = JsonConvert.DeserializeObject<List<Entities.Hint>>(apiResponse.Json);
                 }
                 else
                 {
@@ -46,7 +45,7 @@ namespace Riddles.Services
                 throw new Exception(response.ReasonPhrase);
             }
 
-            return levels;
+            return hints;
         }
     }
 }
