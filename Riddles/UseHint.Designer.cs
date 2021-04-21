@@ -83,7 +83,7 @@ namespace Riddles
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Name = "UseHint";
-            this.Text = "UseHint";
+            this.Text = "Подсказки";
             this.ResumeLayout(false);
 
         }

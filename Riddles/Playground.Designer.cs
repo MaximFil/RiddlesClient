@@ -464,7 +464,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Playground";
-            this.Text = "Playground";
+            this.Text = "Игровое поле";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Playground_FormClosing);
             this.Load += new System.EventHandler(this.Form2_Load);
