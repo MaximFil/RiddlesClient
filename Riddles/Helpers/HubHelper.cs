@@ -35,5 +35,10 @@ namespace Riddles.Helpers
         {
             Playground.SurrenderRival(userName);
         }
+
+        public void RivalFinished()
+        {
+            Playground.RivalFinishedGame();
+        }
     }
 }

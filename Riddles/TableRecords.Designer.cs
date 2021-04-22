@@ -56,24 +56,24 @@
             // 
             this.easyToolStripMenuItem.Font = new System.Drawing.Font("Monotype Corsiva", 13.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.easyToolStripMenuItem.Name = "easyToolStripMenuItem";
-            this.easyToolStripMenuItem.Size = new System.Drawing.Size(65, 26);
-            this.easyToolStripMenuItem.Text = "EasИ";
+            this.easyToolStripMenuItem.Size = new System.Drawing.Size(94, 26);
+            this.easyToolStripMenuItem.Text = "Простой";
             this.easyToolStripMenuItem.Click += new System.EventHandler(this.easyToolStripMenuItem_Click);
             // 
             // middleToolStripMenuItem
             // 
             this.middleToolStripMenuItem.Font = new System.Drawing.Font("Monotype Corsiva", 13.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.middleToolStripMenuItem.Name = "middleToolStripMenuItem";
-            this.middleToolStripMenuItem.Size = new System.Drawing.Size(77, 26);
-            this.middleToolStripMenuItem.Text = "Middle";
+            this.middleToolStripMenuItem.Size = new System.Drawing.Size(89, 26);
+            this.middleToolStripMenuItem.Text = "Средний";
             this.middleToolStripMenuItem.Click += new System.EventHandler(this.middleToolStripMenuItem_Click);
             // 
             // hardToolStripMenuItem
             // 
             this.hardToolStripMenuItem.Font = new System.Drawing.Font("Monotype Corsiva", 13.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.hardToolStripMenuItem.Name = "hardToolStripMenuItem";
-            this.hardToolStripMenuItem.Size = new System.Drawing.Size(61, 26);
-            this.hardToolStripMenuItem.Text = "Hard";
+            this.hardToolStripMenuItem.Size = new System.Drawing.Size(97, 26);
+            this.hardToolStripMenuItem.Text = "Сложный";
             this.hardToolStripMenuItem.Click += new System.EventHandler(this.hardToolStripMenuItem_Click);
             // 
             // dataGridView1
@@ -81,7 +81,7 @@
             this.dataGridView1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(41, 59);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
@@ -97,7 +97,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "TableRecords";
             this.Text = "Рекорды";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

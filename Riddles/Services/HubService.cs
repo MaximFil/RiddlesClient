@@ -50,6 +50,11 @@ namespace Riddles.Services
             {
                 hubHelper.Surrender(userName);
             });
+
+            hubConnection.On("RivalFinished", () =>
+            {
+                hubHelper.RivalFinished();
+            });
         }
 
         private static bool isBusy;
@@ -134,6 +139,12 @@ namespace Riddles.Services
         public static async void Surrender(string userName, string rivalName)
         {
             await hubConnection.InvokeAsync("Surrender", userName, rivalName);
+        }
+
+        //соперник закончил раньше тебя и ждёт твоих действий
+        public static async void RivalFinishedRequest(string rivalName)
+        {
+            await hubConnection.InvokeAsync("RivalFinished", rivalName);
         }
 
         public static event PropertyChangedEventHandler PropertyChanged;

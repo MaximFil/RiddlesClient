@@ -12,6 +12,8 @@ namespace Riddles.Entities
 
         public string LevelName { get; set; }
 
+        public string RussianName { get; set; }
+
         public int LevelTime { get; set; }
     }
 }

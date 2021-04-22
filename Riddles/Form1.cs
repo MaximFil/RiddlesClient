@@ -18,7 +18,6 @@ namespace Riddles
     public partial class Form1 : Form, ICloseble
     {
         private readonly UserService userService;
-        //private readonly HubService hubService;
         private const string loginLabelText = "У меня уже есть аккаунт";
         private const string signupLabelText = "Создать новый аккаунт";
         private const string enterName = "Введите логин";
@@ -33,7 +32,6 @@ namespace Riddles
             this.userService = new UserService();
             this.usedUserNames = new HashSet<string>();
             UserProfile.CurrentForm = this;
-            //this.hubService = new HubService();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -109,7 +107,7 @@ namespace Riddles
             {
                 isLogin = false;
                 label2.Text = loginLabelText;
-                button1.Text = "Заригестрироваться";
+                button1.Text = "Зарегестрироваться";
             }
             else
             {

@@ -93,7 +93,7 @@ namespace Riddles
         {
             if (accept)
             {
-                var gameSession = gameSessionService.CreateGameSession(UserProfile.Id, choosedUserId, level.Id);
+                var gameSession = await gameSessionService.CreateGameSession(UserProfile.Id, choosedUserId, level.Id);
                 await HubService.StartGame(textBox1.Text, gameSession.Id);
                 Playground playground = new Playground(gameSession);
                 playground.Show();
@@ -101,7 +101,7 @@ namespace Riddles
             }
             else
             {
-                MessageBox.Show($"Пользователь {textBox1.Text} отклонил ваше прглашение!", "Приглашения", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Пользователь {textBox1.Text} отклонил ваше приглашение!", "Приглашения", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 pictureBox1.Visible = false;
             }
         }

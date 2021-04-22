@@ -30,28 +30,15 @@ namespace Riddles
         public static event usingHint Notify;
         public delegate void surrenderRequest(string rivalName);
         public static event surrenderRequest SurrenderNotify;
+        public delegate void rivalFinishedGame();
+        public static event rivalFinishedGame rivalFinishedNotify; 
         public int HintPoints { get; set; } = 10;
         private List<TextBoxModel> textBoxModelsList { get; set; }
         private bool dispose { get; set; }
         private DateTime timeTimer { get; set; }
         private DateTime totalTime { get; set; }
         private int pointsForOneRiddle { get; set; }
-        private int totalUserPoints { get; set; }
-
-
-        private List<int> passRiddlesNumber;
-        private int number;
-        private int count;
-        private readonly Random random;
-        public static int typeHint = 0;
-        private const int maxCountRiddle = 5;
-        private int counter = 0;
-        public string RiddlesAnswerPath { get; set; }
-        public string RiddlesTextPath { get; set; }
-        public string RiddleText { get; set; }
-        public string RiddleAnswer { get; set; }
-        public Level Level { get; set; }
-        
+        private int totalUserPoints { get; set; }      
 
         public Playground(GameSession gameSession)
         {
@@ -66,25 +53,12 @@ namespace Riddles
             textBoxModelsList = InitTextBoxModels();
             Notify += FunctionOfUsingHint;
             SurrenderNotify += SurrenderAction;
+            rivalFinishedNotify += RivalFinishedAction;
             dispose = true;
             this.timeTimer = new DateTime(1, 1, 1, 1, 0, 0).AddSeconds(UserProfile.Level.LevelTime);
             this.totalTime = new DateTime(1, 1, 1, 1, 0, 0);
             this.pointsForOneRiddle = 10;
             this.totalUserPoints = 0;
-
-            //var pos = this.PointToScreen(pictureBox2.Location);
-            //pos = pictureBox1.PointToClient(pos);
-            //pictureBox2.Parent = pictureBox1;
-            //pictureBox2.Location = pos;
-            //pictureBox2.BackColor = Color.Transparent;
-            //this.Level = level;
-            //this.RiddlesTextPath = String.Format("{0}{1}.txt", ConfigurationManager.AppSettings["path"], this.Level);
-            //this.RiddlesAnswerPath = String.Format("{0}{1}Answer.txt", ConfigurationManager.AppSettings["path"], this.Level);
-            //this.count = File.ReadAllLines(this.RiddlesTextPath).Length;
-            //this.random = new Random();
-            //this.passRiddlesNumber = new List<int>();
-            //
-            //
         }
 
         private List<TextBoxModel> InitTextBoxModels()
@@ -209,9 +183,10 @@ namespace Riddles
                 currentRiddle = GetNextRiddle();
                 if(currentRiddle == null)
                 {
+                    timer1.Stop();
                     gameSessionService.CompleteGameSessionForUser(gameSession.Id, UserProfile.Id, totalTime.ToString("m:s"), totalUserPoints);
-                    var isFinishedRival = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName).Finished;
-                    if (!isFinishedRival)
+                    var rivalGameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
+                    if (!rivalGameSessionUser.Finished)
                     {
                         MessageBox.Show("Пожалуйста подождите пока ваш соперник не закончит игру.\nВы автоматичски будете переброшенны на страницу результатов!", "Игра окончена", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         pictureBox3.Image = Image.FromFile(@"Resources/99px_ru_animacii_20594_kot_krutitsja_kak_kolesiko_zagruzki.gif");
@@ -221,7 +196,7 @@ namespace Riddles
                     else
                     {
                         gameSessionService.CompleteGameSession(gameSession.Id);
-                        var rivalGameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
+                        HubService.RivalFinishedRequest(UserProfile.RivalName);
                         ResultForm resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, rivalGameSessionUser.TotalTime, rivalGameSessionUser.Points);
                         resultForm.Show();
                         dispose = true;
@@ -245,10 +220,10 @@ namespace Riddles
             }
         }
 
-        private void ActionAfterFinishPlaying()
-        {
-            timer1.Stop();
-        }
+        //private void ActionAfterFinishPlaying()
+        //{
+        //    timer1.Stop();
+        //}
 
         private void Form2_Load(object sender, EventArgs e)
         {
@@ -349,7 +324,7 @@ namespace Riddles
         private void timer1_Tick(object sender, EventArgs e)
         {
             timeTimer = timeTimer.AddSeconds(-1);
-            totalTime.AddSeconds(1);
+            totalTime = totalTime.AddSeconds(1);
             label3.Text = timeTimer.ToString("m:ss");
             if(timeTimer.Minute == 0 && timeTimer.Second == 0)
             {
@@ -384,6 +359,22 @@ namespace Riddles
             gameSessionService.CompleteGameSession(gameSession.Id);
             var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, rivalName);
             var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points, true);
+            dispose = true;
+            resultForm.Show();
+            this.Close();
+        }
+
+        public static void RivalFinishedGame()
+        {
+            rivalFinishedNotify.Invoke();
+        }
+
+        private void RivalFinishedAction()
+        {
+            gameSessionService.CompleteGameSession(gameSession.Id);
+            var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
+            var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points);
+            dispose = true;
             resultForm.Show();
             this.Close();
         }

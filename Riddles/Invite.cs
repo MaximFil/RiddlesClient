@@ -19,7 +19,7 @@ namespace Riddles
         public Invite(string userName = "", string levelName = "")
         {
             InitializeComponent();
-            label1.Text = string.Format("{0} хочет сыграть с вами на уровне {1}.", userName, levelName);
+            label1.Text = string.Format("{0} хочет сыграть с вами на уровне {1}.", userName, Levels.DictionaryLevels[levelName].RussianName);
             this.userName = userName;
             this.levelName = levelName;
         }
