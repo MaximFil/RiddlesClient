@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Riddles.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +13,8 @@ namespace Riddles
 {
     public partial class ResultForm : Form
     {
+        private readonly GameSessionService gameSessionService;
+
         private string TotalTime { get; set; }
 
         private int TotalPoints { get; set; }
@@ -37,6 +40,7 @@ namespace Riddles
             this.RivalTotalTime = rivalTotalTime;
             this.RivalTotalPoints = rivalTotalPoints;
             this.Surrender = surrender;
+            this.gameSessionService = new GameSessionService();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -44,14 +48,14 @@ namespace Riddles
 
         }
 
-        private void ResultForm_Load(object sender, EventArgs e)
+        private async void ResultForm_Load(object sender, EventArgs e)
         {
-            label1.Text = string.Format(UserTemplateMessage, TotalTime, TotalPoints);
-           
+            var result = String.Empty;
             if(Surrender.HasValue && Surrender.Value)
             {
                 label3.Text = string.Format(WinMessage, UserProfile.RivalName);
                 label2.Text = SurrenderMassage;
+                result = "Won";
             }
             else
             {
@@ -64,22 +68,28 @@ namespace Riddles
                 var rivalMinutes = Convert.ToInt32(rivalTime[0]);
                 var rivalSeconds = Convert.ToInt32(rivalTime[1]);
                 var rivalTotalSeconds = rivalMinutes * 60 + rivalSeconds;
-                
+
+                label1.Text = string.Format(UserTemplateMessage, TotalTime, TotalPoints);
                 label2.Text = string.Format(RivalTemplateMessage, RivalTotalTime, RivalTotalPoints);
                 
                 if(TotalPoints > RivalTotalPoints || (TotalPoints == RivalTotalPoints && userTotalSeconds < rivalTotalSeconds))
                 {
                     label3.Text = string.Format(WinMessage, UserProfile.RivalName);
+                    result = "Won";
                 }
                 else if(TotalPoints == RivalTotalPoints && userTotalSeconds == rivalTotalSeconds)
                 {
                     label3.Text = string.Format(DrawMessage, UserProfile.RivalName);
+                    result = "Draw";
                 }
                 else
                 {
                     label3.Text = string.Format(LoseMessage, UserProfile.RivalName);
+                    result = "Lost";
                 }
             }
+
+            await gameSessionService.AddResultToGameSessionUser(UserProfile.GamaSessionId, UserProfile.Id, result);
         }
     }
 }

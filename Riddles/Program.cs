@@ -20,7 +20,7 @@ namespace Riddles
             Application.Run(new Form1());
             UserService userService = new UserService();
             userService.ChangeActivityOfUser(UserProfile.Id, false);
-            userService.ChangeIsPlayingOfUser(UserProfile.Id, false);
+            userService.ChangeIsPlayingOfUser(UserProfile.Id, false).GetAwaiter().GetResult();
         }
     }
 }

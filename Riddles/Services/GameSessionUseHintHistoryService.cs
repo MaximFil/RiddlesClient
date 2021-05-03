@@ -23,7 +23,7 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public void CreateHistory(int gameSessionId, int userId, int riddleId, string hintName, string oldValue, string newValue)
+        public async Task CreateHistory(int gameSessionId, int userId, int riddleId, string hintName, string oldValue, string newValue)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Riddles.Services
                     NewAnswerValue = newValue, 
                     UseDate = DateTime.Now
                 };
-                client.PostAsJsonAsync<GameSessionUseHintHistory>($"api/hinthistory/createhinthistory/{hintName}", history).GetAwaiter().GetResult();
+                await client.PostAsJsonAsync<GameSessionUseHintHistory>($"api/hinthistory/createhinthistory/{hintName}", history);
             }
             catch(Exception ex)
             {

@@ -91,7 +91,7 @@ namespace Riddles
 
                 HubService.SendRequest();
 
-                Menu menu = new Menu(/*hubService*/);
+                Menu menu = new Menu();
                 menu.Show();
                 this.Hide();
             }

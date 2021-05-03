@@ -61,11 +61,11 @@ namespace Riddles.Services
             return gameSession;
         }
 
-        public void CompleteGameSession(int gameSessionId)
+        public async Task CompleteGameSession(int gameSessionId)
         {
             try
             {
-                client.PutAsJsonAsync("api/gamesession/completegamesession", gameSessionId).GetAwaiter().GetResult();
+                await client.PutAsJsonAsync("api/gamesession/completegamesession", gameSessionId);
             }
             catch(Exception ex)
             {
@@ -73,7 +73,7 @@ namespace Riddles.Services
             }
         }
 
-        public void CompleteGameSessionForUser(int gameSessionId, int userId, string totalTime, int totalUserPoints)
+        public async Task CompleteGameSessionForUser(int gameSessionId, int userId, string totalTime, int totalUserPoints)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Riddles.Services
                     Points = totalUserPoints,
                     Finished = true
                 };
-                var response = client.PutAsJsonAsync<XrefGameSessionUser>("api/gamesession/completegamesessionforuser", gameSessionForUser).GetAwaiter().GetResult();
+                await client.PutAsJsonAsync<XrefGameSessionUser>("api/gamesession/completegamesessionforuser", gameSessionForUser);
             }
             catch(Exception ex)
             {
@@ -113,13 +113,37 @@ namespace Riddles.Services
             }
         }
 
-        public void SurrenderGameSessionUser(int gameSessionId, string userName)
+        public async Task SurrenderGameSessionUser(int gameSessionId, string userName)
         {
             try
             {
-                client.PutAsJsonAsync($"api/gamesession/surrendergamesessionuser/{gameSessionId}/{userName}", true).GetAwaiter().GetResult();
+                await client.PutAsJsonAsync($"api/gamesession/surrendergamesessionuser/{gameSessionId}/{userName}", true);
             }
             catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task AddResultToGameSessionUser(int gameSessionId, int userId, string result)
+        {
+            try
+            {
+                await client.PutAsJsonAsync($"api/gamesession/addresulttogamesessionuser/{gameSessionId}/{userId}", result);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task ExitGameSessionUser(int gameSessionId, int userId)
+        {
+            try
+            {
+                await client.PutAsJsonAsync($"api/gamesession/exitgamesessionuser/{gameSessionId}", userId);
+            }
+            catch (Exception ex)
             {
                 throw;
             }

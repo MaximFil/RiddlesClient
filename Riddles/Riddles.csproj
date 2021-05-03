@@ -222,6 +222,7 @@
     </Compile>
     <Compile Include="LevelEnum.cs" />
     <Compile Include="Levels.cs" />
+    <Compile Include="Record.cs" />
     <Compile Include="ResponseModels\ApiResponse.cs" />
     <Compile Include="ResultForm.cs">
       <SubType>Form</SubType>
@@ -235,6 +236,7 @@
     <Compile Include="Services\HintService.cs" />
     <Compile Include="Services\HubService.cs" />
     <Compile Include="Services\LevelService.cs" />
+    <Compile Include="Services\RecordService.cs" />
     <Compile Include="Services\RiddleService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="TableRecords.cs">

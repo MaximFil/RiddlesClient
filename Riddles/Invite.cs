@@ -16,12 +16,14 @@ namespace Riddles
     {
         private readonly string userName;
         private readonly string levelName;
+        private int waitingTime = 0;
         public Invite(string userName = "", string levelName = "")
         {
             InitializeComponent();
             label1.Text = string.Format("{0} хочет сыграть с вами на уровне {1}.", userName, Levels.DictionaryLevels[levelName].RussianName);
             this.userName = userName;
             this.levelName = levelName;
+            StartPosition = FormStartPosition.CenterScreen;
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -45,6 +47,16 @@ namespace Riddles
         {
             await HubService.AcceptInvite(userName, false);
             this.Close();
+        }
+
+        private async void timer1_Tick(object sender, EventArgs e)
+        {
+            waitingTime++;
+            if(waitingTime == 31)
+            {
+                await HubService.AcceptInvite(userName, false);
+                this.Close();
+            }
         }
     }
 }

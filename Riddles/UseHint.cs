@@ -36,7 +36,7 @@ namespace Riddles
         }
         private void UsingHint(HintType hintType)
         {
-            var res = Playground.UseHint(hintType);
+            var res = Playground.UseHint(hintType).GetAwaiter().GetResult();
             if (res.Item1.Equals("success", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Close();

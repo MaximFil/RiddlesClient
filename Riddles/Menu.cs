@@ -23,7 +23,7 @@ namespace Riddles
             UserProfile.CurrentForm = this;
             levelService = new LevelService();
             this.hintService = new HintService();
-            dispose = dispose;
+            this.dispose = dispose;
         }
 
         private void button1_Click_1(object sender, EventArgs e)

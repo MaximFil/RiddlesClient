@@ -26,7 +26,7 @@ namespace Riddles
         private List<Riddle> riddles { get; set; }
         private Riddle currentRiddle { get; set; }
         private RiddleService riddleService { get; set; }
-        public delegate Tuple<string, string> usingHint(HintType hintType);
+        public delegate Task<Tuple<string, string>> usingHint(HintType hintType);
         public static event usingHint Notify;
         public delegate void surrenderRequest(string rivalName);
         public static event surrenderRequest SurrenderNotify;
@@ -81,7 +81,7 @@ namespace Riddles
                 new TextBoxModel{TextBox = textBox14, Index = 13}
             };
         }
-        private Tuple<string, string> FunctionOfUsingHint(HintType hintType)
+        private async Task<Tuple<string, string>> FunctionOfUsingHint(HintType hintType)
         {
             var res = String.Empty;
             var message = string.Empty;
@@ -110,7 +110,7 @@ namespace Riddles
                 this.UseHintForTextBoxes(countTextBoxesForOpen);
                 var newValue = GetValueFromVisibleTextBoxes();
 
-                hintHistoryService.CreateHistory(gameSession.Id, UserProfile.Id, currentRiddle.Id, hintType.ToString(), oldValue, newValue);
+                await hintHistoryService.CreateHistory(gameSession.Id, UserProfile.Id, currentRiddle.Id, hintType.ToString(), oldValue, newValue);
                 res = "success";
             }
             else
@@ -146,7 +146,7 @@ namespace Riddles
             }
         }
 
-        public static Tuple<string, string> UseHint(HintType hintType)
+        public static Task<Tuple<string, string>> UseHint(HintType hintType)
         {
             return Notify.Invoke(hintType);
         }
@@ -172,19 +172,20 @@ namespace Riddles
             return textBoxModelsList.FirstOrDefault(t => t.TextBox.Text.Length == 0 && t.TextBox.Visible == true);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             dispose = false;
             var userAnswer = string.Join("", textBoxModelsList.Where(t => t.TextBox.Visible).Select(t => t.TextBox.Text));
             var correct = string.Equals(userAnswer, currentRiddle.Answer, StringComparison.InvariantCultureIgnoreCase);
-            answerHistoryService.CreateHistory(gameSession.Id, UserProfile.Id, currentRiddle.Id, userAnswer, correct);
+            await answerHistoryService.CreateHistory(gameSession.Id, UserProfile.Id, currentRiddle.Id, userAnswer, correct);
             if(correct)
             {
                 currentRiddle = GetNextRiddle();
                 if(currentRiddle == null)
                 {
+                    dispose = false;
                     timer1.Stop();
-                    gameSessionService.CompleteGameSessionForUser(gameSession.Id, UserProfile.Id, totalTime.ToString("m:s"), totalUserPoints);
+                    await gameSessionService.CompleteGameSessionForUser(gameSession.Id, UserProfile.Id, totalTime.ToString("m:s"), totalUserPoints);
                     var rivalGameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
                     if (!rivalGameSessionUser.Finished)
                     {
@@ -195,11 +196,10 @@ namespace Riddles
                     }
                     else
                     {
-                        gameSessionService.CompleteGameSession(gameSession.Id);
+                        await gameSessionService.CompleteGameSession(gameSession.Id);
                         HubService.RivalFinishedRequest(UserProfile.RivalName);
                         ResultForm resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, rivalGameSessionUser.TotalTime, rivalGameSessionUser.Points);
                         resultForm.Show();
-                        dispose = true;
                         this.Close();
                     }
                 }
@@ -220,12 +220,7 @@ namespace Riddles
             }
         }
 
-        //private void ActionAfterFinishPlaying()
-        //{
-        //    timer1.Stop();
-        //}
-
-        private void Form2_Load(object sender, EventArgs e)
+        private async void Form2_Load(object sender, EventArgs e)
         {
             riddles = riddleService.GetRiddlesByGameSessionId(gameSession.Id);
             if(riddles == null || !riddles.Any())
@@ -233,7 +228,7 @@ namespace Riddles
                 MessageBox.Show("Не удалось получить загадки с сервера!", "Ошибка загрузки загадок", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            userService.ChangeIsPlayingOfUser(UserProfile.Id, true);
+            await userService.ChangeIsPlayingOfUser(UserProfile.Id, true);
             HideAllTextBox();
             currentRiddle = GetNextRiddle();
             label1.Text = currentRiddle.Text;
@@ -308,17 +303,25 @@ namespace Riddles
         }
 
 
-        private void Playground_FormClosing(object sender, FormClosingEventArgs e)
+        private async void Playground_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!dispose)
+            if (dispose)
             {
                 var dialogResult = MessageBox.Show("Вы действительно хотите выйти из приложения?", "Выход", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (dialogResult == DialogResult.Yes)
                 {
+                    //дописать логику выхода из приложения(отправка реквеста сопернику)
+                    await gameSessionService.ExitGameSessionUser(gameSession.Id, UserProfile.Id);
                     Application.Exit();
                 }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
+
+            await userService.ChangeIsPlayingOfUser(UserProfile.Id, false);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -342,10 +345,13 @@ namespace Riddles
             public int Index { get; set; }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
-            gameSessionService.SurrenderGameSessionUser(gameSession.Id, UserProfile.Login);
+            await gameSessionService.SurrenderGameSessionUser(gameSession.Id, UserProfile.Login);
             HubService.Surrender(UserProfile.Login, UserProfile.RivalName);
+            Menu mainMenu = new Menu();
+            mainMenu.Show();
+            this.Close();
         }
 
         public static void SurrenderRival(string rivalName)
@@ -354,12 +360,12 @@ namespace Riddles
             SurrenderNotify.Invoke(rivalName);
         }
 
-        private void SurrenderAction(string rivalName)
+        private async void SurrenderAction(string rivalName)
         {
-            gameSessionService.CompleteGameSession(gameSession.Id);
+            await gameSessionService.CompleteGameSession(gameSession.Id);
             var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, rivalName);
             var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points, true);
-            dispose = true;
+            dispose = false;
             resultForm.Show();
             this.Close();
         }
@@ -369,12 +375,12 @@ namespace Riddles
             rivalFinishedNotify.Invoke();
         }
 
-        private void RivalFinishedAction()
+        private async void RivalFinishedAction()
         {
-            gameSessionService.CompleteGameSession(gameSession.Id);
+            await gameSessionService.CompleteGameSession(gameSession.Id);
             var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
             var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points);
-            dispose = true;
+            dispose = false;
             resultForm.Show();
             this.Close();
         }

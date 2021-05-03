@@ -99,13 +99,13 @@ namespace Riddles.Services
             }
         }
 
-        public bool ChangeIsPlayingOfUser(int userId, bool isPlaying)
+        public async Task<bool> ChangeIsPlayingOfUser(int userId, bool isPlaying)
         {
             if (userId < 1) return false;
-            var response = client.PutAsJsonAsync($"api/user/ChangeIsPlayingOfUser/{userId}", isPlaying).GetAwaiter().GetResult();
+            var response = await client.PutAsJsonAsync($"api/user/ChangeIsPlayingOfUser/{userId}", isPlaying);
             if (response.IsSuccessStatusCode)
             {
-                return response.Content.ReadAsAsync<bool>().GetAwaiter().GetResult();
+                return await response.Content.ReadAsAsync<bool>();
             }
             else
             {

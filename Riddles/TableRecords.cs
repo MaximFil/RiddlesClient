@@ -63,12 +63,5 @@ namespace Riddles
             this?.Close();
         }
     }
-    internal class Record
-    {
-        public string Name { get; set; }
-        public int Minutes { get; set; }
-        public int Seconds { get; set; }
-        public string Date { get; set; }
-    }
 
 }

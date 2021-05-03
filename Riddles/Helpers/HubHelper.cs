@@ -28,7 +28,7 @@ namespace Riddles.Helpers
             var gameSession = gameSessionService.GetGameSessionById(gameSessionId);
             Playground playground = new Playground(gameSession);
             playground.Show();
-            //UserProfile.CurrentForm.CloseForm();
+            UserProfile.CurrentForm.CloseForm();
         }
 
         public void Surrender(string userName)
