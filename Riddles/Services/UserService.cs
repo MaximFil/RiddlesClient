@@ -124,5 +124,19 @@ namespace Riddles.Services
 
             return result;
         }
+
+        public async Task<bool> HaveUnFinishedGameSession(string rivalName)
+        {
+            if (string.IsNullOrWhiteSpace(rivalName)) return false;
+            var response = await client.GetAsync($"api/user/HaveUnFinishedGameSession/{rivalName}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsAsync<bool>();
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+        }
     }
 }

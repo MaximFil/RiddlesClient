@@ -14,6 +14,7 @@ namespace Riddles
     public partial class ResultForm : Form
     {
         private readonly GameSessionService gameSessionService;
+        private readonly UserService userService;
 
         private string TotalTime { get; set; }
 
@@ -25,14 +26,17 @@ namespace Riddles
 
         private bool? Surrender { get; set; }
 
+        private bool? RivalExited { get; set; }
+
         private const string WinMessage = "\U0001F60E  Поздравляем! Вы победили игрока {0}!";
         private const string LoseMessage = "\U0001F62D Вы проиграли игроку {0}!";
         private const string DrawMessage = "\U0001F44A Ничья c игроком {0}!";//ничья
         private const string UserTemplateMessage = "Вы ответели на все загадки за {0} и набрали {1} очков.";
         private const string RivalTemplateMessage = "Ваш соперник ответил на все загадки за {0} и набрал {1} очков.";
         private const string SurrenderMassage = "Ваш соперник сдался.";
+        private const string RivalExitedMessage = "Ваш соперник вышел из игры.";
 
-        public ResultForm(string totalTime, int userTotalPoints, string rivalTotalTime, int rivalTotalPoints, bool? surrender = null)
+        public ResultForm(string totalTime, int userTotalPoints, string rivalTotalTime, int rivalTotalPoints, bool? surrender = null, bool? exited = null)
         {
             InitializeComponent();
             this.TotalTime = totalTime;
@@ -40,12 +44,15 @@ namespace Riddles
             this.RivalTotalTime = rivalTotalTime;
             this.RivalTotalPoints = rivalTotalPoints;
             this.Surrender = surrender;
+            this.RivalExited = exited;
             this.gameSessionService = new GameSessionService();
+            this.userService = new UserService();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
-
+            var isFreeRival = await userService.HaveUnFinishedGameSession(UserProfile.RivalName);
+            //HubService.SendInvite()
         }
 
         private async void ResultForm_Load(object sender, EventArgs e)
@@ -55,6 +62,12 @@ namespace Riddles
             {
                 label3.Text = string.Format(WinMessage, UserProfile.RivalName);
                 label2.Text = SurrenderMassage;
+                result = "Won";
+            }
+            else if(RivalExited.HasValue && RivalExited.Value)
+            {
+                label3.Text = string.Format(WinMessage, UserProfile.RivalName);
+                label2.Text = RivalExitedMessage;
                 result = "Won";
             }
             else

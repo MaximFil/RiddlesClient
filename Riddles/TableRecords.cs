@@ -11,51 +11,69 @@ using System.IO;
 using System.Configuration;
 //using Riddles.DAL;
 using System.Data.Entity;
+using Riddles.Services;
 
 namespace Riddles
 {
     public partial class TableRecords : Form, ICloseble
     {
 
-        //private readonly Context _context;
-        
-        //public Riddles.DAL.Record Record { get; set; }
+        private readonly RecordService recordService;
+
+        private List<ToolStripMenuItem> ToolStripMenuItems;
+
         public TableRecords()
         {
             InitializeComponent();
             UserProfile.CurrentForm = this;
-           // this.Record = record;
-           // _context = new Context();
+            this.recordService = new RecordService();
+            this.ToolStripMenuItems = new List<ToolStripMenuItem> { easyToolStripMenuItem, middleToolStripMenuItem, hardToolStripMenuItem };
         }
 
-        private void easyToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void easyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //dataGridView1.DataSource = GetRecordsByLevel(this.Record.Level.LevelName);
-
+            dataGridView1.DataSource = await recordService.GetRecordsByLevel(Level.Easy.ToString());
+            easyToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.ActiveCaption);
+            middleToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.Control);
+            hardToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.Control);
         }
 
-        private void middleToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void middleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //dataGridView1.DataSource = GetRecordsByLevel(this.Record.Level.LevelName);
+            dataGridView1.DataSource = await recordService.GetRecordsByLevel(Level.Middle.ToString());
+            middleToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.ActiveCaption);
+            easyToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.Control);
+            hardToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.Control);
         }
 
-        private void hardToolStripMenuItem_Click(object sender, EventArgs e)
+        private  async void hardToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //dataGridView1.DataSource = GetRecordsByLevel(this.Record.Level.LevelName);
+            dataGridView1.DataSource = await recordService .GetRecordsByLevel(Level.Hard.ToString());
+            hardToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.ActiveCaption);
+            middleToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.Control);
+            easyToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.Control);
         }
-        private List<Record> GetRecordsByLevel(string level)
+
+        private async void TableRecords_Load(object sender, EventArgs e)
         {
-            //var records = _context.Records.Include(r => r.Level).Include(r => r.User).Where(r => r.Level.LevelName == level).OrderBy(r => r.TotalTime).ToList();
-            var res = new List<Record>();
-            //foreach (var record in records)
-            //{
-            //    res.Add(new Riddles.Record { Date = record.Date.ToString("dd.MM.yyyy"), Minutes = record.Minutes, Name = record.User.Name, Seconds = record.Seconds });
-            //}
-            return res;
-        }
-        private void TableRecords_Load(object sender, EventArgs e)
-        {
-            //dataGridView1.DataSource = GetRecordsByLevel(this.Record.Level.LevelName);
+            var defaultLevelName = UserProfile.Level?.LevelName ?? Level.Easy.ToString();
+
+            if (string.Equals(defaultLevelName, Level.Easy.ToString()))
+            {
+                easyToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.ActiveCaption);
+            }
+
+            if (string.Equals(defaultLevelName, Level.Middle.ToString()))
+            {
+                middleToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.ActiveCaption);
+            }
+
+            if (string.Equals(defaultLevelName, Level.Hard.ToString()))
+            {
+                hardToolStripMenuItem.BackColor = Color.FromKnownColor(KnownColor.ActiveCaption);
+            }
+
+            dataGridView1.DataSource = await recordService.GetRecordsByLevel(defaultLevelName);
         }
 
         public void CloseForm()

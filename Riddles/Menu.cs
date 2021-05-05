@@ -16,13 +16,15 @@ namespace Riddles
     {
         private readonly LevelService levelService;
         private readonly HintService hintService;
+        private readonly UserService userService;
         private bool dispose;
         public Menu(bool dispose = true)
         {
             InitializeComponent();
             UserProfile.CurrentForm = this;
-            levelService = new LevelService();
+            this.levelService = new LevelService();
             this.hintService = new HintService();
+            this.userService = new UserService();
             this.dispose = dispose;
         }
 
@@ -67,12 +69,13 @@ namespace Riddles
             this?.Close();
         }
 
-        private void Menu_Load(object sender, EventArgs e)
+        private async void Menu_Load(object sender, EventArgs e)
         {
-            var levels = levelService.GetLevels();
+            var levels = await levelService.GetLevels();
             Levels.DictionaryLevels = levels.ToDictionary(l => l.LevelName);
-            var hints = hintService.GetHints();
+            var hints = await hintService.GetHints();
             Hints.DictionaryHints = hints.ToDictionary(h => h.Name);
+            await userService.ChangeIsPlayingOfUser(UserProfile.Id, false);
         }
     }
 }

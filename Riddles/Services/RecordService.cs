@@ -22,16 +22,25 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        //public List<Record> GetRecordsByLevel(int levelId)
-        //{
-        //    try
-        //    {
-
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //}
+        public async Task<List<Record>> GetRecordsByLevel(string levelName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(levelName)) throw new NullReferenceException();
+                var response = await client.GetAsync($"api/record/getrecordsbylevel/{levelName}");
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<List<Record>>();
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

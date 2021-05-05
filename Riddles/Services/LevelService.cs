@@ -25,13 +25,13 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public List<Entities.Level> GetLevels()
+        public async Task<List<Entities.Level>> GetLevels()
         {
             var levels = new List<Entities.Level>();
-            var response = client.GetAsync($"api/level/getlevels/").GetAwaiter().GetResult();
+            var response = await client.GetAsync($"api/level/getlevels/");
             if (response.IsSuccessStatusCode)
             {
-                var apiResponse = response.Content.ReadAsAsync<ApiResponse>().GetAwaiter().GetResult();
+                var apiResponse = await response.Content.ReadAsAsync<ApiResponse>();
                 if (apiResponse.Success)
                 {
                     levels = JsonConvert.DeserializeObject<List<Entities.Level>>(apiResponse.Json);

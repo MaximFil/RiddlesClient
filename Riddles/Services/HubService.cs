@@ -55,6 +55,11 @@ namespace Riddles.Services
             {
                 hubHelper.RivalFinished();
             });
+
+            hubConnection.On("RivalExitedGame", () =>
+            {
+                hubHelper.RivalExitedGame();
+            });
         }
 
         private static bool isBusy;
@@ -145,6 +150,12 @@ namespace Riddles.Services
         public static async void RivalFinishedRequest(string rivalName)
         {
             await hubConnection.InvokeAsync("RivalFinished", rivalName);
+        }
+
+        //игрок вышел из игры не закончив игру
+        public static async void RivalExitedGameResuest(string rivalName)
+        {
+            await hubConnection.InvokeAsync("RivalExited", rivalName);
         }
 
         public static event PropertyChangedEventHandler PropertyChanged;

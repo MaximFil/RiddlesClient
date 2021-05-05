@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;
-using System.IO;
-using System.Diagnostics;
 using System.Data.Entity;
 using Riddles.Entities;
 using Riddles.Services;
@@ -31,7 +26,9 @@ namespace Riddles
         public delegate void surrenderRequest(string rivalName);
         public static event surrenderRequest SurrenderNotify;
         public delegate void rivalFinishedGame();
-        public static event rivalFinishedGame rivalFinishedNotify; 
+        public static event rivalFinishedGame rivalFinishedNotify;
+        public delegate void rivalExitedGame();
+        public static event rivalExitedGame rivalExitedNotify;
         public int HintPoints { get; set; } = 10;
         private List<TextBoxModel> textBoxModelsList { get; set; }
         private bool dispose { get; set; }
@@ -47,14 +44,15 @@ namespace Riddles
             UserProfile.GamaSessionId = gameSession.Id;
             this.riddleService = new RiddleService();
             this.userService = new UserService();
-            hintHistoryService = new GameSessionUseHintHistoryService();
+            this.hintHistoryService = new GameSessionUseHintHistoryService();
             this.answerHistoryService = new AnswerHistoryService();
             this.gameSessionService = new GameSessionService();
-            textBoxModelsList = InitTextBoxModels();
+            this.textBoxModelsList = InitTextBoxModels();
             Notify += FunctionOfUsingHint;
             SurrenderNotify += SurrenderAction;
             rivalFinishedNotify += RivalFinishedAction;
-            dispose = true;
+            rivalExitedNotify += RivalExitedAction;
+            this.dispose = true;
             this.timeTimer = new DateTime(1, 1, 1, 1, 0, 0).AddSeconds(UserProfile.Level.LevelTime);
             this.totalTime = new DateTime(1, 1, 1, 1, 0, 0);
             this.pointsForOneRiddle = 10;
@@ -307,13 +305,14 @@ namespace Riddles
         {
             if (dispose)
             {
-                var dialogResult = MessageBox.Show("Вы действительно хотите выйти из приложения?", "Выход", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var dialogResult = MessageBox.Show("Вы действительно хотите закончить текущую игровую сессию и перейти в меню?", "Выход", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (dialogResult == DialogResult.Yes)
                 {
-                    //дописать логику выхода из приложения(отправка реквеста сопернику)
                     await gameSessionService.ExitGameSessionUser(gameSession.Id, UserProfile.Id);
-                    Application.Exit();
+                    var menu = new Menu();
+                    menu.Show();
+                    this.Close();
                 }
                 else
                 {
@@ -364,7 +363,7 @@ namespace Riddles
         {
             await gameSessionService.CompleteGameSession(gameSession.Id);
             var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, rivalName);
-            var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points, true);
+            var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points, surrender: true);
             dispose = false;
             resultForm.Show();
             this.Close();
@@ -380,6 +379,22 @@ namespace Riddles
             await gameSessionService.CompleteGameSession(gameSession.Id);
             var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
             var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points);
+            dispose = false;
+            resultForm.Show();
+            this.Close();
+        }
+
+        public static void RivalExitedGame()
+        {
+            MessageBox.Show($"Ваш соперник {UserProfile.RivalName} вышел из игры!\nВы будете перенаправлены на форму результатов!", "Победа", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            rivalExitedNotify.Invoke();
+        }
+
+        private async void RivalExitedAction()
+        {
+            await gameSessionService.CompleteGameSession(gameSession.Id);
+            var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
+            var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points, exited: true);
             dispose = false;
             resultForm.Show();
             this.Close();

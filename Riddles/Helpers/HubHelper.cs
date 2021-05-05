@@ -40,5 +40,10 @@ namespace Riddles.Helpers
         {
             Playground.RivalFinishedGame();
         }
+
+        public void RivalExitedGame()
+        {
+            Playground.RivalExitedGame();
+        }
     }
 }

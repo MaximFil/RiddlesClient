@@ -24,13 +24,13 @@ namespace Riddles.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public List<Entities.Hint> GetHints()
+        public async Task<List<Entities.Hint>> GetHints()
         {
             var hints = new List<Entities.Hint>();
-            var response = client.GetAsync($"api/hint/gethints/").GetAwaiter().GetResult();
+            var response = await client.GetAsync($"api/hint/gethints/");
             if (response.IsSuccessStatusCode)
             {
-                var apiResponse = response.Content.ReadAsAsync<ApiResponse>().GetAwaiter().GetResult();
+                var apiResponse = await response.Content.ReadAsAsync<ApiResponse>();
                 if (apiResponse.Success)
                 {
                     hints = JsonConvert.DeserializeObject<List<Entities.Hint>>(apiResponse.Json);
