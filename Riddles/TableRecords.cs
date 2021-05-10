@@ -80,6 +80,17 @@ namespace Riddles
         {
             this?.Close();
         }
+
+        private void TableRecords_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            var menu = new Menu();
+            menu.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 
 }

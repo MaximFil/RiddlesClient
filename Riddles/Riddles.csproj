@@ -213,6 +213,7 @@
     <Compile Include="Helpers\HubHelper.cs" />
     <Compile Include="Hints.cs" />
     <Compile Include="HintType.cs" />
+    <Compile Include="IAcceptInite.cs" />
     <Compile Include="ICloseble.cs" />
     <Compile Include="Invite.cs">
       <SubType>Form</SubType>

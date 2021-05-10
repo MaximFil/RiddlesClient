@@ -100,6 +100,7 @@
             this.button1.TabIndex = 2;
             this.button1.Text = "Выход";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // TableRecords
             // 
@@ -115,6 +116,7 @@
             this.Name = "TableRecords";
             this.Text = "Рекорды";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TableRecords_FormClosed);
             this.Load += new System.EventHandler(this.TableRecords_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

@@ -469,6 +469,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Playground_FormClosing);
             this.Load += new System.EventHandler(this.Form2_Load);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form2_KeyUp);
+            this.Resize += new System.EventHandler(this.Playground_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();

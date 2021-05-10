@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Riddles
 {
-    public partial class ResultForm : Form
+    public partial class ResultForm : Form, ICloseble, IAcceptInite
     {
         private readonly GameSessionService gameSessionService;
         private readonly UserService userService;
@@ -28,6 +28,8 @@ namespace Riddles
 
         private bool? RivalExited { get; set; }
 
+        private bool dispose { get; set; }
+
         private const string WinMessage = "\U0001F60E  Поздравляем! Вы победили игрока {0}!";
         private const string LoseMessage = "\U0001F62D Вы проиграли игроку {0}!";
         private const string DrawMessage = "\U0001F44A Ничья c игроком {0}!";//ничья
@@ -36,7 +38,7 @@ namespace Riddles
         private const string SurrenderMassage = "Ваш соперник сдался.";
         private const string RivalExitedMessage = "Ваш соперник вышел из игры.";
 
-        public ResultForm(string totalTime, int userTotalPoints, string rivalTotalTime, int rivalTotalPoints, bool? surrender = null, bool? exited = null)
+        public ResultForm(string totalTime, int userTotalPoints, string rivalTotalTime, int rivalTotalPoints, bool? surrender = null, bool? exited = null, bool dispose = true)
         {
             InitializeComponent();
             this.TotalTime = totalTime;
@@ -47,16 +49,25 @@ namespace Riddles
             this.RivalExited = exited;
             this.gameSessionService = new GameSessionService();
             this.userService = new UserService();
+            UserProfile.CurrentForm = this;
+            this.dispose = dispose;
         }
 
         private async void button2_Click(object sender, EventArgs e)
         {
             var isFreeRival = await userService.HaveUnFinishedGameSession(UserProfile.RivalName);
-            //HubService.SendInvite()
+            if (isFreeRival)
+            {
+                var message = String.Format("Игрок {0} хочет сыграть с вами ещё раз на уровне {1}!", UserProfile.Login, UserProfile.Level.RussianName);
+                await HubService.SendInvite(UserProfile.RivalName, UserProfile.Level.LevelName, message, this);
+            }
         }
 
         private async void ResultForm_Load(object sender, EventArgs e)
         {
+            label1.MaximumSize = new Size(this.Width, this.Height);
+            label2.MaximumSize = new Size(this.Width, this.Height);
+            label3.MaximumSize = new Size(this.Width, this.Height);
             var result = String.Empty;
             if(Surrender.HasValue && Surrender.Value)
             {
@@ -103,6 +114,46 @@ namespace Riddles
             }
 
             await gameSessionService.AddResultToGameSessionUser(UserProfile.GamaSessionId, UserProfile.Id, result);
+        }
+
+        private void ResultForm_Resize(object sender, EventArgs e)
+        {
+            label1.MaximumSize = new Size(this.Width, this.Height);
+            label2.MaximumSize = new Size(this.Width, this.Height);
+            label3.MaximumSize = new Size(this.Width, this.Height);
+        }
+
+        private void ResultForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (dispose)
+            {
+                var menu = new Menu();
+                menu.Show();
+            }
+        }
+
+        public void CloseForm()
+        {
+            this.dispose = false;
+            this.Close();
+        }
+
+        public async void AcceptInvite(bool accept)
+        {
+            if (accept)
+            {
+                dispose = false;
+                var gameSession = await gameSessionService.CreateGameSession(UserProfile.Id, UserProfile.RivalName, UserProfile.Level.Id);
+                await HubService.StartGame(UserProfile.RivalName, gameSession.Id);
+                Playground playground = new Playground(gameSession);
+                playground.Show();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show($"Пользователь {UserProfile.RivalName} отклонил ваше приглашение!", "Приглашения", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                pictureBox1.Visible = false;
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Riddles.Services
     {
         private static readonly HubConnection hubConnection;
         private static readonly HubHelper hubHelper;
-        private static SendRequest sendRequest;
+        private static IAcceptInite formAcceptInvite;
 
         static HubService()
         {
@@ -31,14 +31,14 @@ namespace Riddles.Services
                 Console.WriteLine("User connected");
             });
 
-            hubConnection.On<string, string>("SendInvite", (userName, levelName) =>
+            hubConnection.On<string, string, string>("SendInvite", (userName, levelName, message) =>
             {
-                hubHelper.SendInvite(userName, levelName);
+                hubHelper.SendInvite(userName, levelName, message);
             });
 
             hubConnection.On<bool>("AcceptInvite", (accept) =>
             {
-                sendRequest.AcceptInvite(accept);
+                formAcceptInvite.AcceptInvite(accept);
             });
 
             hubConnection.On<int>("StartGame", (gameSessionId) =>
@@ -119,9 +119,9 @@ namespace Riddles.Services
             IsConnected = false;
         }
 
-        public static async Task SendInvite(string userName, string levelName, SendRequest form)
+        public static async Task SendInvite(string userName, string levelName, string message, IAcceptInite form)
         {
-            sendRequest = form;
+            formAcceptInvite = form;
             await hubConnection.InvokeAsync("SendInvite", userName, levelName);
         }
 

@@ -17,10 +17,10 @@ namespace Riddles
         private readonly string userName;
         private readonly string levelName;
         private int waitingTime = 0;
-        public Invite(string userName = "", string levelName = "")
+        public Invite(string userName = "", string levelName = "", string message = "")
         {
             InitializeComponent();
-            label1.Text = string.Format("{0} хочет сыграть с вами на уровне {1}.", userName, Levels.DictionaryLevels[levelName].RussianName);
+            label1.Text = message;
             this.userName = userName;
             this.levelName = levelName;
             StartPosition = FormStartPosition.CenterScreen;
@@ -32,15 +32,6 @@ namespace Riddles
             UserProfile.Level = Levels.DictionaryLevels[levelName];
             UserProfile.RivalName = userName;
             this.Close();
-        }
-
-        private void Invite_Load(object sender, EventArgs e)
-        {
-            //Thread.Sleep(30000);
-            //if (!this.IsDisposed)
-            //{
-            //    this.Close();
-            //}
         }
 
         private async void button2_Click(object sender, EventArgs e)

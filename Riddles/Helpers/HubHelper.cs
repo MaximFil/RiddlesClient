@@ -17,9 +17,9 @@ namespace Riddles.Helpers
             gameSessionService = new GameSessionService();
         }
 
-        public void SendInvite(string userName, string levelName)
+        public void SendInvite(string userName, string levelName, string message)
         {
-            var inviteForm = new Invite(userName, levelName);
+            var inviteForm = new Invite(userName, levelName, message);
             inviteForm.Show();
         }
 

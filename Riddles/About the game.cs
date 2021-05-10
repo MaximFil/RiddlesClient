@@ -25,8 +25,6 @@ namespace Riddles
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Menu menu = new Menu();
-            menu.Show();
             this.Close();
         }
 
@@ -38,6 +36,12 @@ namespace Riddles
         public void CloseForm()
         {
             this?.Close();
+        }
+
+        private void About_The_Game_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var menu = new Menu();
+            menu.Show();
         }
     }
 }

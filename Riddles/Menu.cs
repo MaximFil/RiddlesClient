@@ -66,6 +66,7 @@ namespace Riddles
         }
         public void CloseForm()
         {
+            dispose = false;
             this?.Close();
         }
 

@@ -12,7 +12,7 @@ using Riddles.Services;
 
 namespace Riddles
 {
-    public partial class SendRequest : Form, ICloseble
+    public partial class SendRequest : Form, ICloseble, IAcceptInite
     {
         private readonly UserService userService;
         private readonly LevelService levelService;
@@ -72,7 +72,8 @@ namespace Riddles
             else
             {
                 dispose = false;
-                await HubService.SendInvite(textBox1.Text, UserProfile.Level.LevelName.ToString(), this);
+                var message = string.Format("{0} хочет сыграть с вами на уровне {1}.", UserProfile.Login, UserProfile.Level.RussianName);
+                await HubService.SendInvite(textBox1.Text, UserProfile.Level.LevelName, message, this);
                 UserProfile.RivalName = textBox1.Text;
                 pictureBox1.Image = Image.FromFile(@"Resources/99px_ru_animacii_20594_kot_krutitsja_kak_kolesiko_zagruzki.gif");
                 pictureBox1.Dock = DockStyle.Fill;
@@ -93,7 +94,7 @@ namespace Riddles
         {
             if (accept)
             {
-                var gameSession = await gameSessionService.CreateGameSession(UserProfile.Id, choosedUserId, level.Id);
+                var gameSession = await gameSessionService.CreateGameSession(UserProfile.Id, textBox1.Text, level.Id);
                 await HubService.StartGame(textBox1.Text, gameSession.Id);
                 Playground playground = new Playground(gameSession);
                 playground.Show();
@@ -110,12 +111,14 @@ namespace Riddles
         {
             if (dispose)
             {
-                Application.Exit();
+                var menu = new Menu();
+                menu.Show();
             }
         }
 
         public void CloseForm()
         {
+            dispose = false;
             this?.Close();
         }
 
