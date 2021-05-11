@@ -48,10 +48,22 @@ namespace Riddles
             this.answerHistoryService = new AnswerHistoryService();
             this.gameSessionService = new GameSessionService();
             this.textBoxModelsList = InitTextBoxModels();
-            Notify += FunctionOfUsingHint;
-            SurrenderNotify += SurrenderAction;
-            rivalFinishedNotify += RivalFinishedAction;
-            rivalExitedNotify += RivalExitedAction;
+            if(Notify == null)
+            {
+                Notify += FunctionOfUsingHint;
+            }
+            if(SurrenderNotify == null)
+            {
+                SurrenderNotify += SurrenderAction;
+            }
+            if(rivalFinishedNotify == null)
+            {
+                rivalFinishedNotify += RivalFinishedAction;
+            }
+            if(rivalExitedNotify == null)
+            {
+                rivalExitedNotify += RivalExitedAction;
+            }
             this.dispose = true;
             this.timeTimer = new DateTime(1, 1, 1, 1, 0, 0).AddSeconds(UserProfile.Level.LevelTime);
             this.totalTime = new DateTime(1, 1, 1, 1, 0, 0);
@@ -126,7 +138,7 @@ namespace Riddles
 
         private string GetValueFromVisibleTextBoxes()
         {
-            var visibleTextBoxes = textBoxModelsList.Where(t => t.TextBox.Visible).ToList();
+            var visibleTextBoxes = textBoxModelsList.Where(t => t.TextBox.Visible).Select(t => t.TextBox.Text).ToList();
 
             return string.Join("", visibleTextBoxes);
         }
@@ -172,14 +184,15 @@ namespace Riddles
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            dispose = false;
             var userAnswer = string.Join("", textBoxModelsList.Where(t => t.TextBox.Visible).Select(t => t.TextBox.Text));
             var correct = string.Equals(userAnswer, currentRiddle.Answer, StringComparison.InvariantCultureIgnoreCase);
             await answerHistoryService.CreateHistory(gameSession.Id, UserProfile.Id, currentRiddle.Id, userAnswer, correct);
             if(correct)
             {
                 currentRiddle = GetNextRiddle();
-                if(currentRiddle == null)
+                totalUserPoints += pointsForOneRiddle;
+                label4.Text = string.Format("Очки пользователя: {0}", totalUserPoints);
+                if (currentRiddle == null)
                 {
                     dispose = false;
                     timer1.Stop();
@@ -207,8 +220,6 @@ namespace Riddles
                     label1.Text = currentRiddle.Text;
                     VisibleNeededTextBox(currentRiddle.Answer);
                     CleanTextBox();
-                    totalUserPoints += pointsForOneRiddle;
-                    label4.Text = string.Format("Очки пользователя: {0}", totalUserPoints);
                 }
                 
             }
@@ -220,7 +231,7 @@ namespace Riddles
 
         private async void Form2_Load(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Size.Width, this.Size.Height);
+            label1.MaximumSize = new Size(this.Size.Width - 30, this.Size.Height);
             riddles = riddleService.GetRiddlesByGameSessionId(gameSession.Id);
             if(riddles == null || !riddles.Any())
             {
@@ -311,9 +322,9 @@ namespace Riddles
                 if (dialogResult == DialogResult.Yes)
                 {
                     await gameSessionService.ExitGameSessionUser(gameSession.Id, UserProfile.Id);
+                    HubService.RivalExitedGameRequest(UserProfile.RivalName);
                     var menu = new Menu();
                     menu.Show();
-                    this.Close();
                 }
                 else
                 {
@@ -321,10 +332,11 @@ namespace Riddles
                 }
             }
 
+            await gameSessionService.CompleteGameSessionForUser(gameSession.Id, UserProfile.Id, totalTime.ToString("m:s"), totalUserPoints);
             await userService.ChangeIsPlayingOfUser(UserProfile.Id, false);
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private async void timer1_Tick(object sender, EventArgs e)
         {
             timeTimer = timeTimer.AddSeconds(-1);
             totalTime = totalTime.AddSeconds(1);
@@ -333,6 +345,24 @@ namespace Riddles
             {
                 timer1.Stop();
                 MessageBox.Show("Время вышло");
+                await gameSessionService.CompleteGameSessionForUser(gameSession.Id, UserProfile.Id, totalTime.ToString("m:s"), totalUserPoints);
+                var rivalGameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
+                if (!rivalGameSessionUser.Finished)
+                {
+                    MessageBox.Show("Пожалуйста подождите пока ваш соперник не закончит игру.\nВы автоматичски будете переброшенны на страницу результатов!", "Игра окончена", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    pictureBox3.Image = Image.FromFile(@"Resources/99px_ru_animacii_20594_kot_krutitsja_kak_kolesiko_zagruzki.gif");
+                    pictureBox3.Dock = DockStyle.Fill;
+                    pictureBox3.Visible = true;
+                }
+                else
+                {
+                    dispose = false;
+                    await gameSessionService.CompleteGameSession(gameSession.Id);
+                    HubService.RivalFinishedRequest(UserProfile.RivalName);
+                    ResultForm resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, rivalGameSessionUser.TotalTime, rivalGameSessionUser.Points);
+                    resultForm.Show();
+                    this.Close();
+                }
             }
         }        
         
@@ -347,6 +377,7 @@ namespace Riddles
 
         private async void button2_Click(object sender, EventArgs e)
         {
+            dispose = false;
             await gameSessionService.SurrenderGameSessionUser(gameSession.Id, UserProfile.Login);
             HubService.Surrender(UserProfile.Login, UserProfile.RivalName);
             Menu mainMenu = new Menu();
@@ -403,7 +434,7 @@ namespace Riddles
 
         private void Playground_Resize(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Size.Width, this.Size.Height); 
+            label1.MaximumSize = new Size(this.Size.Width - 30, this.Size.Height); 
         }
     }
 }

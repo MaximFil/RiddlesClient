@@ -115,7 +115,6 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "TableRecords";
             this.Text = "Рекорды";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TableRecords_FormClosed);
             this.Load += new System.EventHandler(this.TableRecords_Load);
             this.menuStrip1.ResumeLayout(false);

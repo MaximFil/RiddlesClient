@@ -129,7 +129,7 @@ namespace Riddles.Services
         {
             try
             {
-                await client.PutAsJsonAsync($"api/gamesession/addresulttogamesessionuser/{gameSessionId}/{userId}", result);
+                await client.PostAsJsonAsync($"api/gamesession/addresulttogamesessionuser/{gameSessionId}/{userId}", result);
             }
             catch(Exception ex)
             {

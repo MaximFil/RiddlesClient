@@ -28,15 +28,16 @@ namespace Riddles.Services
             try
             {
                 var history = new GameSessionUseHintHistory()
-                { 
-                    GameSessionId = gameSessionId, 
-                    UserId = userId, 
+                {
+                    GameSessionId = gameSessionId,
+                    UserId = userId,
+                    HintId = Hints.DictionaryHints.ContainsKey(hintName) ? Hints.DictionaryHints[hintName].Id : 1,
                     RiddleId = riddleId, 
                     OldAnswerValue = oldValue, 
                     NewAnswerValue = newValue, 
                     UseDate = DateTime.Now
                 };
-                await client.PostAsJsonAsync<GameSessionUseHintHistory>($"api/hinthistory/createhinthistory/{hintName}", history);
+                await client.PostAsJsonAsync<GameSessionUseHintHistory>($"api/hinthistory/createhinthistory", history);
             }
             catch(Exception ex)
             {

@@ -80,6 +80,8 @@ namespace Riddles
             this.Controls.Add(this.label1);
             this.Name = "Invite";
             this.Text = "Приглашение";
+            this.Load += new System.EventHandler(this.Invite_Load);
+            this.Resize += new System.EventHandler(this.Invite_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 

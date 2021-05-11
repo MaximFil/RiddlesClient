@@ -20,23 +20,23 @@ namespace Riddles
             this.Location = new Point(Cursor.Position.X - this.Width, Cursor.Position.Y);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
-            this.UsingHint(HintType.FullWord);
+            await this.UsingHint(HintType.FullWord);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private async void button3_Click(object sender, EventArgs e)
         {
-            this.UsingHint(HintType.OneChar);
+            await this.UsingHint(HintType.OneChar);
         }
         
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            this.UsingHint(HintType.HalfWord);
+            await this.UsingHint(HintType.HalfWord);
         }
-        private void UsingHint(HintType hintType)
+        private async Task UsingHint(HintType hintType)
         {
-            var res = Playground.UseHint(hintType).GetAwaiter().GetResult();
+            var res = await Playground.UseHint(hintType);
             if (res.Item1.Equals("success", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Close();

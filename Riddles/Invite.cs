@@ -49,5 +49,15 @@ namespace Riddles
                 this.Close();
             }
         }
+
+        private void Invite_Load(object sender, EventArgs e)
+        {
+            label1.MaximumSize = new Size(this.Size.Width - 10, this.Size.Height);
+        }
+
+        private void Invite_Resize(object sender, EventArgs e)
+        {
+            label1.MaximumSize = new Size(this.Size.Width - 10, this.Size.Height);
+        }
     }
 }

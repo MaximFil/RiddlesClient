@@ -55,29 +55,35 @@ namespace Riddles
 
         private async void button2_Click(object sender, EventArgs e)
         {
-            var isFreeRival = await userService.HaveUnFinishedGameSession(UserProfile.RivalName);
-            if (isFreeRival)
+            var haveUnfinishedChame = await userService.HaveUnFinishedGameSession(UserProfile.RivalName);
+            if (haveUnfinishedChame == false)
             {
                 var message = String.Format("Игрок {0} хочет сыграть с вами ещё раз на уровне {1}!", UserProfile.Login, UserProfile.Level.RussianName);
                 await HubService.SendInvite(UserProfile.RivalName, UserProfile.Level.LevelName, message, this);
+            }
+            else
+            {
+                MessageBox.Show(string.Format("{0} уже играет с другим игроком, либо вышел из игры!", UserProfile.RivalName), "Реванш", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private async void ResultForm_Load(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Width, this.Height);
-            label2.MaximumSize = new Size(this.Width, this.Height);
-            label3.MaximumSize = new Size(this.Width, this.Height);
+            label1.MaximumSize = new Size(this.Width - 15, this.Height);
+            label2.MaximumSize = new Size(this.Width - 15, this.Height);
+            label3.MaximumSize = new Size(this.Width - 15, this.Height);
             var result = String.Empty;
             if(Surrender.HasValue && Surrender.Value)
             {
                 label3.Text = string.Format(WinMessage, UserProfile.RivalName);
+                label1.Visible = false;
                 label2.Text = SurrenderMassage;
                 result = "Won";
             }
             else if(RivalExited.HasValue && RivalExited.Value)
             {
                 label3.Text = string.Format(WinMessage, UserProfile.RivalName);
+                label1.Visible = false;
                 label2.Text = RivalExitedMessage;
                 result = "Won";
             }
@@ -118,9 +124,9 @@ namespace Riddles
 
         private void ResultForm_Resize(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Width, this.Height);
-            label2.MaximumSize = new Size(this.Width, this.Height);
-            label3.MaximumSize = new Size(this.Width, this.Height);
+            label1.MaximumSize = new Size(this.Width - 15, this.Height);
+            label2.MaximumSize = new Size(this.Width - 15, this.Height);
+            label3.MaximumSize = new Size(this.Width - 15, this.Height);
         }
 
         private void ResultForm_FormClosing(object sender, FormClosingEventArgs e)

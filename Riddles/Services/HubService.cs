@@ -122,7 +122,7 @@ namespace Riddles.Services
         public static async Task SendInvite(string userName, string levelName, string message, IAcceptInite form)
         {
             formAcceptInvite = form;
-            await hubConnection.InvokeAsync("SendInvite", userName, levelName);
+            await hubConnection.InvokeAsync("SendInvite", userName, levelName, message);
         }
 
         public static async Task AcceptInvite(string userName, bool accept)
@@ -153,9 +153,9 @@ namespace Riddles.Services
         }
 
         //игрок вышел из игры не закончив игру
-        public static async void RivalExitedGameResuest(string rivalName)
+        public static async void RivalExitedGameRequest(string rivalName)
         {
-            await hubConnection.InvokeAsync("RivalExited", rivalName);
+            await hubConnection.InvokeAsync("RivalExitedGame", rivalName);
         }
 
         public static event PropertyChangedEventHandler PropertyChanged;

@@ -169,7 +169,6 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SendRequest";
             this.Text = "Отправка приглашения";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SendRequest_FormClosing);
             this.Load += new System.EventHandler(this.SendRequest_Load);
             this.groupBox1.ResumeLayout(false);
