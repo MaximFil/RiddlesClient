@@ -48,22 +48,14 @@ namespace Riddles
             this.answerHistoryService = new AnswerHistoryService();
             this.gameSessionService = new GameSessionService();
             this.textBoxModelsList = InitTextBoxModels();
-            if(Notify == null)
-            {
-                Notify += FunctionOfUsingHint;
-            }
-            if(SurrenderNotify == null)
-            {
-                SurrenderNotify += SurrenderAction;
-            }
-            if(rivalFinishedNotify == null)
-            {
-                rivalFinishedNotify += RivalFinishedAction;
-            }
-            if(rivalExitedNotify == null)
-            {
-                rivalExitedNotify += RivalExitedAction;
-            }
+            Notify = null;
+            Notify += FunctionOfUsingHint;
+            SurrenderNotify = null;
+            SurrenderNotify += SurrenderAction;
+            rivalFinishedNotify = null;
+            rivalFinishedNotify += RivalFinishedAction;
+            rivalExitedNotify = null;
+            rivalExitedNotify += RivalExitedAction;
             this.dispose = true;
             this.timeTimer = new DateTime(1, 1, 1, 1, 0, 0).AddSeconds(UserProfile.Level.LevelTime);
             this.totalTime = new DateTime(1, 1, 1, 1, 0, 0);
