@@ -223,7 +223,7 @@ namespace Riddles
 
         private async void Form2_Load(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Size.Width - 30, this.Size.Height);
+            label1.MaximumSize = new Size(this.Size.Width - 80, this.Size.Height);
             riddles = riddleService.GetRiddlesByGameSessionId(gameSession.Id);
             if(riddles == null || !riddles.Any())
             {
@@ -426,7 +426,7 @@ namespace Riddles
 
         private void Playground_Resize(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Size.Width - 30, this.Size.Height); 
+            label1.MaximumSize = new Size(this.Size.Width - 80, this.Size.Height); 
         }
     }
 }
