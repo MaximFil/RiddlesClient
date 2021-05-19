@@ -194,7 +194,7 @@ namespace Riddles
                     var rivalGameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
                     if (!rivalGameSessionUser.Finished)
                     {
-                        MessageBox.Show("Пожалуйста подождите пока ваш соперник не закончит игру.\nВы автоматичски будете переброшенны на страницу результатов!", "Игра окончена", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Пожалуйста подождите пока ваш соперник закончит игру.\nВы автоматичски будете переброшенны на страницу результатов!", "Игра окончена", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         pictureBox3.Image = Image.FromFile(@"Resources/99px_ru_animacii_20594_kot_krutitsja_kak_kolesiko_zagruzki.gif");
                         pictureBox3.Dock = DockStyle.Fill;
                         pictureBox3.Visible = true;

@@ -37,7 +37,7 @@ namespace Riddles
         private const string WinMessage = "\U0001F60E  Поздравляем! Вы победили игрока {0}!";
         private const string LoseMessage = "\U0001F62D Вы проиграли игроку {0}!";
         private const string DrawMessage = "\U0001F44A Ничья c игроком {0}!";//ничья
-        private const string UserTemplateMessage = "Вы ответели на все загадки за {0} и набрали {1} очков.";
+        private const string UserTemplateMessage = "Вы ответили на все загадки за {0} и набрали {1} очков.";
         private const string RivalTemplateMessage = "Ваш соперник ответил на все загадки за {0} и набрал {1} очков.";
         private const string SurrenderMassage = "Ваш соперник сдался.";
         private const string RivalExitedMessage = "Ваш соперник вышел из игры.";
@@ -80,6 +80,7 @@ namespace Riddles
 
         private async void ResultForm_Load(object sender, EventArgs e)
         {
+            pictureBox2.Visible = false;
             label1.MaximumSize = new Size(this.Width - leftIndent, this.Height);
             label2.MaximumSize = new Size(this.Width - leftIndent, this.Height);
             label3.MaximumSize = new Size(this.Width - leftIndent, this.Height);

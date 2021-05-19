@@ -131,7 +131,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(203, 28);
             this.label2.TabIndex = 6;
-            this.label2.Text = "Ввведите имя игрока";
+            this.label2.Text = "Введите имя игрока";
             // 
             // textBox1
             // 
