@@ -28,6 +28,10 @@ namespace Riddles
 
         private bool? RivalExited { get; set; }
 
+        private bool? TimeOver { get; set; }
+
+        private bool? RivalTimeOver { get; set; }
+
         private bool dispose { get; set; }
 
         private const string WinMessage = "\U0001F60E  Поздравляем! Вы победили игрока {0}!";
@@ -37,8 +41,11 @@ namespace Riddles
         private const string RivalTemplateMessage = "Ваш соперник ответил на все загадки за {0} и набрал {1} очков.";
         private const string SurrenderMassage = "Ваш соперник сдался.";
         private const string RivalExitedMessage = "Ваш соперник вышел из игры.";
+        private const string TimeOverMessage = "Ваше время вышло.";
+        private const string RivalTimeOverMessage = "Ваш соперник {0} не успел ответить на все загадки за отведенное время.";
+        private const int leftIndent = 35;
 
-        public ResultForm(string totalTime, int userTotalPoints, string rivalTotalTime, int rivalTotalPoints, bool? surrender = null, bool? exited = null, bool dispose = true)
+        public ResultForm(string totalTime, int userTotalPoints, string rivalTotalTime, int rivalTotalPoints, bool? surrender = null, bool? exited = null, bool dispose = true, bool? timeOver = null)
         {
             InitializeComponent();
             this.TotalTime = totalTime;
@@ -47,6 +54,7 @@ namespace Riddles
             this.RivalTotalPoints = rivalTotalPoints;
             this.Surrender = surrender;
             this.RivalExited = exited;
+            this.TimeOver = timeOver;
             this.gameSessionService = new GameSessionService();
             this.userService = new UserService();
             UserProfile.CurrentForm = this;
@@ -58,6 +66,9 @@ namespace Riddles
             var haveUnfinishedChame = await userService.HaveUnFinishedGameSession(UserProfile.RivalName);
             if (haveUnfinishedChame == false)
             {
+                pictureBox2.Image = Image.FromFile(@"Resources/99px_ru_animacii_20594_kot_krutitsja_kak_kolesiko_zagruzki.gif");
+                pictureBox2.Dock = DockStyle.Fill;
+                pictureBox2.Visible = true;
                 var message = String.Format("Игрок {0} хочет сыграть с вами ещё раз на уровне {1}!", UserProfile.Login, UserProfile.Level.RussianName);
                 await HubService.SendInvite(UserProfile.RivalName, UserProfile.Level.LevelName, message, this);
             }
@@ -69,9 +80,9 @@ namespace Riddles
 
         private async void ResultForm_Load(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Width - 15, this.Height);
-            label2.MaximumSize = new Size(this.Width - 15, this.Height);
-            label3.MaximumSize = new Size(this.Width - 15, this.Height);
+            label1.MaximumSize = new Size(this.Width - leftIndent, this.Height);
+            label2.MaximumSize = new Size(this.Width - leftIndent, this.Height);
+            label3.MaximumSize = new Size(this.Width - leftIndent, this.Height);
             var result = String.Empty;
             if(Surrender.HasValue && Surrender.Value)
             {
@@ -86,6 +97,12 @@ namespace Riddles
                 label1.Visible = false;
                 label2.Text = RivalExitedMessage;
                 result = "Won";
+            }
+            else if(TimeOver.HasValue && TimeOver.Value == true)
+            {
+                label3.Text = TimeOverMessage;
+                label2.Visible = false;
+                label1.Visible = false;
             }
             else
             {
@@ -124,9 +141,9 @@ namespace Riddles
 
         private void ResultForm_Resize(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Width - 15, this.Height);
-            label2.MaximumSize = new Size(this.Width - 15, this.Height);
-            label3.MaximumSize = new Size(this.Width - 15, this.Height);
+            label1.MaximumSize = new Size(this.Width - leftIndent, this.Height);
+            label2.MaximumSize = new Size(this.Width - leftIndent, this.Height);
+            label3.MaximumSize = new Size(this.Width - leftIndent, this.Height);
         }
 
         private void ResultForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -158,7 +175,7 @@ namespace Riddles
             else
             {
                 MessageBox.Show($"Пользователь {UserProfile.RivalName} отклонил ваше приглашение!", "Приглашения", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                pictureBox1.Visible = false;
+                pictureBox2.Visible = false;
             }
         }
     }

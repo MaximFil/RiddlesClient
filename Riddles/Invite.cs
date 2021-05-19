@@ -17,6 +17,7 @@ namespace Riddles
         private readonly string userName;
         private readonly string levelName;
         private int waitingTime = 0;
+        private const int leftIndent = 30;
         public Invite(string userName = "", string levelName = "", string message = "")
         {
             InitializeComponent();
@@ -52,12 +53,12 @@ namespace Riddles
 
         private void Invite_Load(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Size.Width - 10, this.Size.Height);
+            label1.MaximumSize = new Size(this.Size.Width - leftIndent, this.Size.Height);
         }
 
         private void Invite_Resize(object sender, EventArgs e)
         {
-            label1.MaximumSize = new Size(this.Size.Width - 10, this.Size.Height);
+            label1.MaximumSize = new Size(this.Size.Width - leftIndent, this.Size.Height);
         }
     }
 }

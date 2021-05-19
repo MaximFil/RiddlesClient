@@ -35,7 +35,8 @@ namespace Riddles
         private DateTime timeTimer { get; set; }
         private DateTime totalTime { get; set; }
         private int pointsForOneRiddle { get; set; }
-        private int totalUserPoints { get; set; }      
+        private int totalUserPoints { get; set; }    
+        private bool? TimeOver { get; set; }
 
         public Playground(GameSession gameSession)
         {
@@ -61,6 +62,7 @@ namespace Riddles
             this.totalTime = new DateTime(1, 1, 1, 1, 0, 0);
             this.pointsForOneRiddle = 10;
             this.totalUserPoints = 0;
+            this.TimeOver = null;
         }
 
         private List<TextBoxModel> InitTextBoxModels()
@@ -336,8 +338,10 @@ namespace Riddles
             if(timeTimer.Minute == 0 && timeTimer.Second == 0)
             {
                 timer1.Stop();
+                this.TimeOver = true;
                 MessageBox.Show("Время вышло");
                 await gameSessionService.CompleteGameSessionForUser(gameSession.Id, UserProfile.Id, totalTime.ToString("m:s"), totalUserPoints);
+                await gameSessionService.AddResultToGameSessionUser(gameSession.Id, UserProfile.Id, "Time is over");
                 var rivalGameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
                 if (!rivalGameSessionUser.Finished)
                 {
@@ -351,7 +355,7 @@ namespace Riddles
                     dispose = false;
                     await gameSessionService.CompleteGameSession(gameSession.Id);
                     HubService.RivalFinishedRequest(UserProfile.RivalName);
-                    ResultForm resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, rivalGameSessionUser.TotalTime, rivalGameSessionUser.Points);
+                    ResultForm resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, rivalGameSessionUser.TotalTime, rivalGameSessionUser.Points, timeOver: TimeOver);
                     resultForm.Show();
                     this.Close();
                 }
@@ -402,7 +406,7 @@ namespace Riddles
         {
             await gameSessionService.CompleteGameSession(gameSession.Id);
             var gameSessionUser = gameSessionService.GetGameSessionUser(gameSession.Id, UserProfile.RivalName);
-            var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points);
+            var resultForm = new ResultForm(totalTime.ToString("m:s"), totalUserPoints, gameSessionUser.TotalTime, gameSessionUser.Points, timeOver: TimeOver);
             dispose = false;
             resultForm.Show();
             this.Close();

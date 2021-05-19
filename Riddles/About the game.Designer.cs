@@ -46,7 +46,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1
             // 
@@ -74,7 +73,6 @@
             this.Name = "About_The_Game";
             this.Text = "Об игре";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.About_The_Game_FormClosing);
-            this.Load += new System.EventHandler(this.About_The_Game_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

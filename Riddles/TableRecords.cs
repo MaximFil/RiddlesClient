@@ -19,15 +19,14 @@ namespace Riddles
     {
 
         private readonly RecordService recordService;
-
-        private List<ToolStripMenuItem> ToolStripMenuItems;
+        private bool dispose;
 
         public TableRecords()
         {
             InitializeComponent();
             UserProfile.CurrentForm = this;
             this.recordService = new RecordService();
-            this.ToolStripMenuItems = new List<ToolStripMenuItem> { easyToolStripMenuItem, middleToolStripMenuItem, hardToolStripMenuItem };
+            this.dispose = true;
         }
 
         private async void easyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -78,13 +77,17 @@ namespace Riddles
 
         public void CloseForm()
         {
+            dispose = false;
             this?.Close();
         }
 
         private void TableRecords_FormClosed(object sender, FormClosedEventArgs e)
         {
-            var menu = new Menu();
-            menu.Show();
+            if(dispose == true)
+            {
+                var menu = new Menu();
+                menu.Show();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

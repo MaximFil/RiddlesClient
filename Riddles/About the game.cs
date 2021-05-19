@@ -12,36 +12,32 @@ namespace Riddles
 {
     public partial class About_The_Game : Form, ICloseble
     {
+        private bool dispose;
         public About_The_Game()
         {
             InitializeComponent();
             UserProfile.CurrentForm = this;
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
+            this.dispose = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
-        private void About_The_Game_Load(object sender, EventArgs e)
-        {
-
-        }
         
         public void CloseForm()
         {
+            dispose = false;
             this?.Close();
         }
 
         private void About_The_Game_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var menu = new Menu();
-            menu.Show();
+            if(dispose == true)
+            {
+                var menu = new Menu();
+                menu.Show();
+            }
         }
     }
 }
