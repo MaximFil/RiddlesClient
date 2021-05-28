@@ -46,33 +46,41 @@ namespace Riddles
                     return;
                 }
 
-                var loginRegex = new Regex(@"[^\u0021-\u007E]+");
-                var loginAdditionalRegex = new Regex("\"|\'");
-                if (loginRegex.IsMatch(login) || loginAdditionalRegex.IsMatch(login))
+                if (usedUserNames.Contains(login) == false && isLogin == true)
                 {
-                    MessageBox.Show("Пожалуйста введите корректный логин, который соответствует правилам:" +
-                        "\n-можно использовать латинские символы;" +
-                        "\n-можно использовать цифры;" +
-                        "\n-можно использовать спецсимволы за исключением \' и \".",
-                        "Валидация логина",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
+                    MessageBox.Show("Пользователь с таким Логином не существует!", "Логин", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-
-                var passwordRegex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_.]).{8,}$");
-                if (!passwordRegex.IsMatch(password))
+                if(isLogin == false)
                 {
-                    MessageBox.Show("Пожалуйста введите корректный пароль, который соответствует правилам:" +
-                        "\n-по крайней мере одна строчная английская буква;" +
-                        "\n-по крайней мере одна заглавная английская буква;" +
-                        "\n-по крайней мере одна цифра;" +
-                        "\n-по крайней мере один спец символ;" +
-                        "\n-минимум 8 символов в длину.",
-                        "Валидация пароля",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                    return;
+                    var loginRegex = new Regex(@"[^\u0021-\u007E]+");
+                    var loginAdditionalRegex = new Regex("\"|\'");
+                    if (loginRegex.IsMatch(login) || loginAdditionalRegex.IsMatch(login))
+                    {
+                        MessageBox.Show("Пожалуйста введите корректный логин, который соответствует правилам:" +
+                            "\n-можно использовать латинские символы;" +
+                            "\n-можно использовать цифры;" +
+                            "\n-можно использовать спецсимволы за исключением \' и \".",
+                            "Валидация логина",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    var passwordRegex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_.]).{8,}$");
+                    if (!passwordRegex.IsMatch(password))
+                    {
+                        MessageBox.Show("Пожалуйста введите корректный пароль, который соответствует правилам:" +
+                            "\n-по крайней мере одна строчная английская буква;" +
+                            "\n-по крайней мере одна заглавная английская буква;" +
+                            "\n-по крайней мере одна цифра;" +
+                            "\n-по крайней мере один спец символ;" +
+                            "\n-минимум 8 символов в длину.",
+                            "Валидация пароля",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return;
+                    }
                 }
 
                 if (isLogin)
