@@ -115,7 +115,7 @@ namespace Riddles
             {
                 isLogin = false;
                 label2.Text = loginLabelText;
-                button1.Text = "Зарегестрироваться";
+                button1.Text = "Зарегистрироваться";
             }
             else
             {
